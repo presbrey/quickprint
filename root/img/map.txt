@@ -1,0 +1,1 @@
+http://ims.mit.edu/WMS_MS/WMS.asp?request=getmap&version=1.1.1&width=800&height=500&bbox=709200,495000,712300,496700&layers=Roads,Other+Buildings,Buildings,bldg-iden-12

@@ -67,7 +67,7 @@ class cview {
 		}
 		return false;
 	}
-	public function get_clusters() {
+	public function clusters_printers() {
 		$data = $this->_parse_config();
 		$clusters = array();
 		foreach($data as $d) {
@@ -79,7 +79,7 @@ class cview {
 		}
 		return $clusters;
 	}
-	public function get_printers() {
+	public function printers_clusters() {
 		$data = $this->_parse_config();
 		$printers = array();
 		foreach($data as $d) {
@@ -91,7 +91,7 @@ class cview {
 		}
 		return $printers;
 	}
-	public function get_jobs() {
+	public function printers_jobs() {
 		$data = $this->_parse_ints();
 		$jobs = array();
 		foreach($data as $d) {
@@ -99,10 +99,21 @@ class cview {
 		}
 		return $jobs;
 	}
+	public function clusters_jobs() {
+		$data = array();
+		$cprinters = $this->clusters_printers();
+		$pjobs = $this->printers_jobs();
+		foreach($cprinters as $cluster=>$printers) {
+			foreach($printers as $printer) {
+				$data[$cluster][$printer] = $pjobs[$printer];
+			}
+		}
+		return $data;
+	}
 	public function printers() {
 		$data = array();
-		$printers = $this->get_printers();
-		$pjobs = $this->get_jobs();
+		$printers = $this->printers_clusters();
+		$pjobs = $this->printers_jobs();
 		foreach($pjobs as $printer=>$jobs) {
 			$data[$printer] = array('name'=>$printer, 'cluster'=>$printers[$printer], 'jobs'=>$jobs);
 		}
@@ -112,9 +123,6 @@ class cview {
 
 /* usage:
 $cview = new cview();
-//print_r($cview->get_clusters());
-//print_r($cview->get_printers());
-//print_r($cview->get_jobs());
-//print_r($cview->printers());
+var_dump($cview->printers());
 */
 ?>
