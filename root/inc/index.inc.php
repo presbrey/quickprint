@@ -26,12 +26,14 @@
 <?php
 		echo '<table>';
 		foreach($jobs_by_state['NEW'] as $job) {
-			printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+			printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>',
 					$job['jname'],
 					$job['jsize'],
 					$job['jtype'],
 					$job['jstatus'],
 					$job['jage']);
+			printf('<td><a href="%sdoc/?del=%d">Delete</a></td>', L_BASE, $job['jid']);
+			echo '</tr>';
 		}
 		echo '</table>';
 	}

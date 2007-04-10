@@ -2,7 +2,8 @@
 
 class Doc extends QPPage {
 	var $title = 'Document';
-	var $handlers = array('post' => array('add'));
+	var $handlers = array('post' => array('add'),
+						  'get'  => array('del'));
 	function add($argv) {
 		$file = $argv['file'];
 
@@ -24,6 +25,17 @@ class Doc extends QPPage {
 
 			// send on to document options
 			header('Location: '.L_BASE.'doc/'.$jid);
+			exit;
+		}
+	}
+	function del($argv) {
+		if (strlen($argv['del']) && strlen($argv['uName'])) {
+			$stmt = $this->db->prepare(DB_J_RM);
+			$stmt->bind_param('is', $argv['del'], $argv['uName']);
+			$stmt->execute();
+
+			// send back to index
+			header('Location: '.L_BASE);
 			exit;
 		}
 	}
