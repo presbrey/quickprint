@@ -19,12 +19,17 @@ $map['E51-075'] = array(750, 220);
 $map['Hayden'] = array(435, 345);
 
 ?>
-<div id="map" style="position: relative;">
+<div id="map">
 <?
-foreach($map as $pos) {
-	printf('<input type="button" style="width: 10px; height: 10px; background-color: red; position: absolute; left: %d; top: %d; border: 1px solid black"></span>',
-			$pos[0], $pos[1]);
+foreach($map as $name=>$pos) {
+	printf('<input type="button" class="mapb" style="left: %d; top: %d;" onMouseOver="%s" onClick="%s" id="%s" />',
+			$pos[0], $pos[1],
+			"highlightC('$name')",
+			"alert('You selected: $name\\n\\nQuickPrint is coming soon!')",
+			'b_'.$name);
 }
 ?>
-<img src="img/map.jpg" />
+<img src="img/map.jpg" style="border: 1px solid black;" />
+<br />
+<center><span id="c_selected"></span></center>
 </div>

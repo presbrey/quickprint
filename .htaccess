@@ -1,0 +1,12 @@
+RewriteEngine On
+
+RewriteBase /~quickprint
+RewriteRule ^auth.*$ root/auth.php [L,QSA]
+
+RewriteCond %{SERVER_NAME} scripts.mit.edu
+RewriteRule ^ http://quickprint.mit.edu [R]
+
+<Files "auth.php">
+	SSLVerifyDepth 2
+	SSLVerifyClient optional
+</Files>

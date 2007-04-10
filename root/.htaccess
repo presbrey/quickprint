@@ -8,9 +8,6 @@ RewriteCond %{HTTPS}			off
 RewriteCond %{SERVER_NAME}		!quickprint\.mit\.edu
 RewriteRule ^(.*)$				http://quickprint.mit.edu/$1 [R,L,NS,QSA]
 
-RewriteCond %{REQUEST_METHOD} "POST"
-RewriteRule .* post.php [L,QSA]
-
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteCond %{REQUEST_FILENAME}.php (.+)
@@ -18,6 +15,6 @@ RewriteRule .* %1 [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule .* dispatch.php [L,QSA]
+RewriteRule .* index.php [L,QSA]
 
-RewriteRule ^$ dispatch.php
+RewriteRule ^$ index.php
