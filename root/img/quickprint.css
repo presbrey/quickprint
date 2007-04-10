@@ -23,7 +23,7 @@ img { border: 0; }
   padding: 0px;
   font-style: italic;
   padding-bottom:4px;
-  border-bottom:1px dotted #C5DEA1;
+  border-bottom: 2px dotted #C5DEA1;
   clear: left;
 }
 #content h2 {
@@ -53,6 +53,13 @@ img { border: 0; }
   margin-left: 10px;
   margin-top: 10px;
 }
+#content hr {
+  clear: left;
+  border: 0px;
+  border-top: 1px dotted #C5DEA1;
+  margin-top: 20px;
+}
+
 #content table {
   margin-left: 10px;
   border: 0;

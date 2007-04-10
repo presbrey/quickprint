@@ -6,6 +6,7 @@
 require_once 'system.php';
 require_once 'joe/util.lib.php';
 require_once 'joe/site.lib.php';
+require_once 'sql.lib.php';
 
 class QPSite extends Site {
 	function Start() {
@@ -17,13 +18,16 @@ class QPSite extends Site {
 			exit;
 		} else {
 			session_start();
+			ob_start();
 		}
 	}
 }
 
 class QPPage extends Page {
+	var $db;
 	function Start() {
 		parent::Start();
+		$this->db = new mysqli('sql.mit.edu', DB_USER, DB_PASS, DB_NAME);
 		if (!is_a($this, 'Error') &&
 			(!isset($_SESSION['uName']) ||
 			 empty($_SESSION['uName']))) {

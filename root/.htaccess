@@ -1,6 +1,6 @@
-<Files *.php>
-	SetHandler fcgid-script
-</Files>
+#<Files *.php>
+#	SetHandler fcgid-script
+#</Files>
 
 RewriteEngine On
 

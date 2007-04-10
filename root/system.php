@@ -3,6 +3,8 @@
  * 2006/02/16 Joe Presbrey <presbrey@mit.edu>
  */
 
+file_exists('config.php') && require('config.php');
+
 define('L_HOME', '/~quickprint');
 define('L_HTTP', 'http://quickprint.mit.edu');
 define('L_HTTPS', 'https://scripts.mit.edu' . L_HOME);
@@ -21,6 +23,5 @@ set_include_path(get_include_path()
 
 session_name('qpID');
 session_save_path('/mit/quickprint/tmp');
-ini_set('upload_tmp_dir','/mit/quickprint/tmp');
-ini_set('upload_max_filesize','64M');
-ini_set('post_max_size','64M');
+ini_set('display_errors','1');
+ini_set('error_reporting',E_ALL);
