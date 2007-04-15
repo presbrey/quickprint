@@ -20,6 +20,7 @@ class QPSite extends Site {
 			session_start();
 			ob_start();
 		}
+		parent::Start();
 	}
 }
 

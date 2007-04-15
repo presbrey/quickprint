@@ -23,5 +23,3 @@ set_include_path(get_include_path()
 
 session_name('qpID');
 session_save_path('/mit/quickprint/tmp');
-ini_set('display_errors','1');
-ini_set('error_reporting',E_ALL);

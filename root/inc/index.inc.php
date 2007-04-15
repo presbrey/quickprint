@@ -21,9 +21,7 @@
 
 <?php
 	if (isset($jobs_by_state['NEW'])) {
-?>
-<p><h3>New</h3></p>
-<?php
+		echo '<p><h3>New</h3></p>';
 		echo '<table>';
 		foreach($jobs_by_state['NEW'] as $job) {
 			printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>',
@@ -38,6 +36,6 @@
 		echo '</table>';
 	}
 ?>
-<p><h3>Queued</h3></p>
+<? /* <p><h3>Queued</h3></p> */ ?>
 <? /* <p><h2>Waiting Documents</h2></p> */ ?>
 <p><h3>Printed</h3></p>
