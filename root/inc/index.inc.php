@@ -24,7 +24,15 @@
 		echo '<p><h3>New</h3></p>';
 		echo '<table>';
 		foreach($jobs_by_state['NEW'] as $job) {
-			printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>',
+			$ext = strtolower(substr(strrchr($job['jname'], "."), 1));
+			switch($ext) {
+				case 'pdf': $img = 'acrobat.gif'; break;
+				case 'ps': $img = 'news.gif'; break;
+				default: $img = 'text.gif'; break;
+			}
+			printf('<tr><td><img src="%s" />
+						%s</td><td>%s</td><td>%s</td><td>%s</td>',
+					L_IMG.$img,
 					$job['jname'],
 					$job['jsize'],
 					$job['jtype'],
