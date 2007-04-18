@@ -25,13 +25,12 @@ class QPSite extends Site {
 }
 
 class QPPage extends Page {
-	var $db;
+	var $DB;
 	function Start() {
 		parent::Start();
-		$this->db = new mysqli('sql.mit.edu', DB_USER, DB_PASS, DB_NAME);
+		$this->DB = new mysqli('sql.mit.edu', DB_USER, DB_PASS, DB_NAME);
 		if (!is_a($this, 'Error') &&
-			(!isset($_SESSION['uName']) ||
-			 empty($_SESSION['uName']))) {
+			(!isset($this->s_uName) || empty($this->s_uName))) {
 			header('Location: '.L_HTTPS.'/auth'.$_SERVER['REQUEST_URI']);
 			exit;
 		}

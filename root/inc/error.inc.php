@@ -7,6 +7,7 @@ switch($error) {
 <p>A valid MIT certificate is required to access QuickPrint.
  Install your <a target="_new" href="http://ca.mit.edu/">MIT certificate</a>
  and <a href="<?=L_BASE?>">try again</a>.</p>
+<p>You may need to restart your browser after installing your certificate.</p>
 <?php
 		break;
 	default:

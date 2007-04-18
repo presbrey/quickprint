@@ -7,7 +7,7 @@ session_set_cookie_params(0, L_HOME);
 session_start();
 $s_https = isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:0;
 $s_uri = $_SERVER['REDIRECT_URL'];
-if ($s_https) {
+if ($s_https && isset($_SERVER['SSL_CLIENT_S_DN_Email'])) {
 	$uGecos = $_SERVER['SSL_CLIENT_S_DN_CN'];
 	$uEmail = $_SERVER['SSL_CLIENT_S_DN_Email'];
 	$uName = array_shift(explode('@',$uEmail));

@@ -2,12 +2,12 @@
 
 class Error extends QPPage {
 	var $title = 'Error';
-	function _default($argv) {
-		if (count($this->argp) == 0 || empty($this->argp[0])) {
+	function _default() {
+		if (count($this->URI) == 2 || empty($this->URI[2])) {
 			header('Location: '.L_BASE);
 			exit;
 		} else {
-			$error = $this->argp[0];
+			$error = $this->URI[2];
 			include 'error.inc.php';
 		}
 	}

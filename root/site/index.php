@@ -6,7 +6,7 @@ class Index extends QPPage {
 		include 'index.inc.php';
 	}
 	function jobs() {
-		$q = $this->db->query(sprintf(DB_J_USER,$this->db->real_escape_string($this->s_uName)));
+		$q = $this->DB->query(sprintf(DB_J_USER,$this->DB->real_escape_string($this->s_uName)));
 		while($row = $q->fetch_assoc())
 			$res[] = $row;
 		return $res;
