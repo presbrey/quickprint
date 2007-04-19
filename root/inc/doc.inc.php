@@ -54,14 +54,13 @@ if ($this->has_errors()) {
 
 <p><h2>Printing Properties</h2></p>
 
+<?php if (empty($job['jqueue'])) { ?>
+Choose a printer for this document by clicking "select" next to "Printer" below or print the document later by clicking "Save".
+<?php } ?>
 <table>
 <tr><td colspan=2><?=$this->error('jqueue')?></td></tr>
-<?php
-	if (!empty($job['jqueue'])) {
-		echo '<tr><td>Printer:</td><td>';
-		printf('%s <input type="submit" name="queue" value="select" />', $job['jqueue'], L_BASE.'queue/?jid='.$jid);
-	}
-?>
+<tr><td>Printer:</td><td>
+<?php printf('%s <input type="submit" name="queue" value="select" />', $job['jqueue'], L_BASE.'queue/?jid='.$jid); ?>
 </td></tr>
 <tr><td colspan=2><?=$this->error('jduplex')?></td></tr>
 <tr><td>Duplex printing:</td><td>

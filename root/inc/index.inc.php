@@ -1,7 +1,7 @@
-<p>QuickPrint helps you print documents on your computer to Athena cluster printers.</p>
+<p>QuickPrint helps you print documents from your computer to Athena cluster printers.</p>
 
 <p><h2>Print New Document</h2></p>
-<p>Select a PDF or PostScript file from your computer:
+<p>Select a document to print from your computer: PDF, PostScript, or text.
 	<form action="doc" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="MAX_FILE_SIZE" value="8388608" />
 	<input type="file" name="file">

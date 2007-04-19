@@ -26,13 +26,13 @@ $map['Hayden'] = array(435, 345);
 <?
 foreach($map as $name=>$pos) {
 	printf('<input type="button" class="cluster_b" style="left: %d; top: %d;" onMouseOver="%s" onClick="%s" id="%s" />',
-			$pos[0], $pos[1],
+			$pos[0], $pos[1]-60,
 			"cluster_hover('$name')",
 			"location='$name/?jid=$jid';",
 			'b_'.$name);
 }
 ?>
-<img src="<?=L_IMG?>map.jpg" style="border: 1px solid black;" />
+<img src="<?=L_IMG?>map2.jpg" style="border: 1px solid black;" />
 </div></td></tr>
 <tr><td>
 <form action="<?=L_BASE.'doc/?setup&jid='.$jid?>" method="post">

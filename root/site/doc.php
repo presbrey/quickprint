@@ -161,8 +161,8 @@ class Doc extends QPPage {
 				$qname = basename($job['jfile']);
 				`/mit/quickprint/ID/renew`;
 				putenv('KRB5CCNAME=/tmp/krb5cc_536886204');
-				//`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -sOutputFile=- $t_ban $t_doc | lpr -P$qdest -J$qname -h`;
-				`cat $t_ban $t_doc | lpr -P$qdest -J$qname -h`;
+				`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -sOutputFile=- $t_ban $t_doc | lpr -P$qdest -J$qname -h`;
+				//`cat $t_ban $t_doc | lpr -P$qdest -J$qname -h`;
 				unlink($t_ban);
 				unlink($t_doc);
 				//unlink($t_out);
