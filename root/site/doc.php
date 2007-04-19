@@ -90,7 +90,6 @@ class Doc extends QPPage {
 					$queue = substr($queue, 0, -1);
 				if (strlen($queue)) {
 					$q = $this->DB->prepare(DB_J_SETQ);
-					echo $this->DB->error;
 					$q->bind_param('sis', $queue, $jid, $this->s_uName);
 					$q->execute();
 					if (isset($this->p_save)) {
