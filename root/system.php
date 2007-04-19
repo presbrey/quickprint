@@ -14,6 +14,7 @@ define('L_IMG', L_HTTP.'/img/');
 define('P_TOP', dirname(__FILE__));
 define('P_BASE', realpath(P_TOP.'/'));
 define('P_ROOT', realpath(P_TOP.'/../'));
+define('P_BIN', P_TOP.'/bin/');
 define('P_LIB', P_TOP.'/lib/');
 define('P_INC', P_TOP.'/inc/');
 

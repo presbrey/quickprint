@@ -2,7 +2,7 @@
 <font size="-1"><strong>
 
 <? if (isset($_SESSION['uName'])) { ?>
-<?=strtolower($_SESSION['uEmail'])?>
+<?=strtolower($_SESSION['uEmail'])?> <img src="<?=L_IMG?>secure.gif" />
 &nbsp;|&nbsp;
 <a href="<?=L_BASE?>">Home</a>
 <? /* &nbsp;|&nbsp; <a href="<?=L_BASE?>logout">Sign out</a> */ ?>

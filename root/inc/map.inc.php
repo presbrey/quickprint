@@ -19,17 +19,36 @@ $map['E51-075'] = array(750, 220);
 $map['Hayden'] = array(435, 345);
 
 ?>
-<div id="map">
+<h2>Select a Cluster Location<h2>
+<table id="clusters">
+<tr><td align="right"><span id="cluster_sel">&nbsp;</span></td></tr>
+<tr><td><div id="cluster_map">
 <?
 foreach($map as $name=>$pos) {
-	printf('<input type="button" class="mapb" style="left: %d; top: %d;" onMouseOver="%s" onClick="%s" id="%s" />',
+	printf('<input type="button" class="cluster_b" style="left: %d; top: %d;" onMouseOver="%s" onClick="%s" id="%s" />',
 			$pos[0], $pos[1],
-			"highlightC('$name')",
-			"alert('You selected: $name\\n\\nQuickPrint is coming soon!')",
+			"cluster_hover('$name')",
+			"location='$name/?jid=$jid';",
 			'b_'.$name);
 }
 ?>
-<img src="img/map.jpg" style="border: 1px solid black;" />
-<br />
-<center><span id="c_selected"></span></center>
-</div>
+<img src="<?=L_IMG?>map.jpg" style="border: 1px solid black;" />
+</div></td></tr>
+<tr><td>
+<form action="<?=L_BASE.'doc/?setup&jid='.$jid?>" method="post">
+<p style="float:right;">
+<a id="unlisted_entry" class="expert" href="#" onClick="$('unlisted_entry').hide(); $('unlisted').show();">expert mode</a>
+<span id="unlisted" class="expert" style="display: none;">
+enter an unlisted print queue: 
+<input type="text" name="queue" size="12" />
+<input type="submit" name="save" value="save" />
+<input type="submit" name="print" value="print" />
+</span>
+</p>
+</form>
+<?php
+printf('<p><img src="%s" /> %s</p>',
+	L_IMG.'lightbulb.gif',
+	'select a cluster above denoted by its green marker');
+?></td></tr>
+</table>

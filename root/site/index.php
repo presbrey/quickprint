@@ -5,11 +5,14 @@ class Index extends QPPage {
 	function _default() {
 		include 'index.inc.php';
 	}
-	function jobs() {
-		$q = $this->DB->query(sprintf(DB_J_USER,$this->DB->real_escape_string($this->s_uName)));
-		while($row = $q->fetch_assoc())
+	function jobs($user) {
+		$q = $this->DB->query(sprintf(DB_J_USER,
+			$this->DB->real_escape_string($user)));
+		while($row = $q->fetch_assoc()) {
 			$res[] = $row;
-		return $res;
+		}
+		if (isset($res))
+			return $res;
 	}
 }
 

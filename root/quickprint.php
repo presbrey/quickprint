@@ -7,6 +7,7 @@ require_once 'system.php';
 require_once 'joe/util.lib.php';
 require_once 'joe/site.lib.php';
 require_once 'sql.lib.php';
+require_once 'filters.lib.php';
 
 class QPSite extends Site {
 	function Start() {
@@ -47,4 +48,16 @@ class QPPage extends Page {
 	function Foot() {
 		include 'foot.inc.php';
 	}
+	function error_item($item, $text) {
+		$this->errors[$item] = $text;
+	}
+	function error($item) {
+		if (isset($this->errors[$item])) {
+			return sprintf('<span class="error_item">%s</span>', $this->errors[$item]);
+		}
+	}
+	function has_errors() {
+		return isset($this->errors) && count($this->errors);
+	}
 }
+

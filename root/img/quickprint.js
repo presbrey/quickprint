@@ -1,10 +1,10 @@
-var lastCluster = "Barker";
+var lastCluster;
 
-function highlightC(n) {
-	$('b_'+lastCluster).className = 'mapb';
+function cluster_hover(n) {
+	if ($('b_'+lastCluster)) {
+		$('b_'+lastCluster).className = 'cluster_b';
+	}
 	$('b_'+n).className += 'h';
-	$('c_'+lastCluster).className = 'cjobs';
-	$('c_'+n).className += 'h';
+	$('cluster_sel').innerHTML = 'map location: ' + n;
 	lastCluster = n;
-	$('c_selected').innerHTML = n;
 }
