@@ -166,6 +166,9 @@ class Doc extends QPPage {
 				unlink($t_ban);
 				unlink($t_doc);
 				//unlink($t_out);
+				$q = $this->DB->prepare(DB_J_STATUS);
+				$q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
+				$q->execute();
 			}
 		}
 		header('Location: '.L_BASE);
@@ -286,8 +289,7 @@ class Doc extends QPPage {
 			escapeshellarg($res['juser']),
 			escapeshellarg($res['jname']),
 			escapeshellarg($res['jqueue']),
-			'',
-			//$res['jduplex'] != 0 ? '; echo showpage' : '',
+			$res['jduplex'] != 0 ? '; echo showpage' : '',
 			$t_pre);
 		`$x_ban`;
 

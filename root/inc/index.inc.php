@@ -1,4 +1,4 @@
-<p>QuickPrint helps you print documents from your computer to Athena cluster printers.</p>
+<p>QuickPrint helps you print documents to Athena cluster printers.</p>
 
 <p><h2>Print New Document</h2></p>
 <p>Select a document to print from your computer: PDF, PostScript, or text.
@@ -61,7 +61,7 @@
 		$manage_documents = true;
 		echo '<p><h3>Printed Documents</h3></p>';
 		echo '<table id="docs_done" class="list">';
-		echo '<tr><th>Document Name:</th><th>Printer:</th><th>Date:</th><th colspan=3>Actions:</th></tr>';
+		echo '<tr><th>Document Name:</th><th>Printer:</th><th>Date:</th><th colspan=3>Actions:</th><th>Status:</th></tr>';
 		foreach($jobs_by_state['DONE'] as $job) {
 			$ext = strtolower(substr(strrchr($job['jname'], "."), 1));
 			switch($ext) {
@@ -80,6 +80,7 @@
 			printf('<td><a href="%sdoc/?print&jid=%d"><img src="%s" /> Print</a></td>', L_BASE, $job['jid'], L_IMG.'news.gif');
 			printf('<td><a href="%sdoc/?setup&jid=%d"><img src="%s" /> Options</a></td>', L_BASE, $job['jid'], L_IMG.'edit.gif');
 			printf('<td><a href="%sdoc/?del&jid=%d"><img src="%s" /> Delete</a></td>', L_BASE, $job['jid'], L_IMG.'delete.png');
+			strlen($job['jstatus']) && 	printf('<td>%s</td>', $job['jstatus']);
 			echo '</tr>';
 		}
 		echo '</table>';

@@ -15,7 +15,7 @@ class QPSite extends Site {
 			session_id($_GET['auth']);
 			@session_start();
 			session_regenerate_id();
-			header(sprintf('Location: %s', newQSA(array('auth'=>null))));
+			header(sprintf('Location: %s', L_BASE.newQSA(array('auth'=>null))));
 			exit;
 		} else {
 			session_start();
