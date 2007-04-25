@@ -59,6 +59,7 @@ class Doc extends QPPage {
 			if ($this->p_textln < 0) { $this->error_item('textln', 'Line numbering: must 0 or more (0=disable)'); }
 			if (!in_array($this->p_texthon, array(0,1))) { $this->error_item('texthon', 'Disable headers and footers: must be Yes or No'); }
 			if (!in_array($this->p_textbon, array(0,1))) { $this->error_item('textbon', 'Disable column borders: must be Yes or No'); }
+			if (isset($this->p_schedule) && !empty($this->p_schedule)) { $this->error_item('schedule', 'Scheduling doesn\'t work yet.  Try again later.'); }
 			if (!$this->has_errors()) {
 				$q = $this->DB->prepare(DB_JO_SET);
 				$q->bind_param('iiis', $this->p_jnup, $this->p_jduplex, $jid, $this->s_uName);
@@ -151,23 +152,39 @@ class Doc extends QPPage {
 			$t_doc = $this->make_printable($job);
 			if (file_exists($t_ban) && file_exists($t_doc) &&
 				filesize($t_ban)>0 && filesize($t_doc)>0) {
-				//$t_out = tempnam('/tmp', 'qp_');
-				//rename($t_out, "$t_out.ps");
-				//$t_out = "$t_out.pdf";
-				//`gs -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc`;
 				$qdest = $job['jqueue'];
 				if ($job['jduplex']!=0) $qdest .= '2';
 				$qname = basename($job['jfile']);
 				`/mit/quickprint/ID/renew`;
 				putenv('KRB5CCNAME=/tmp/krb5cc_536886204');
-				`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -sOutputFile=- $t_ban $t_doc | lpr -P$qdest -J$qname -h`;
-				//`cat $t_ban $t_doc | lpr -P$qdest -J$qname -h`;
-				unlink($t_ban);
-				unlink($t_doc);
-				//unlink($t_out);
-				$q = $this->DB->prepare(DB_J_STATUS);
-				$q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
-				$q->execute();
+
+				$t_err = tempnam('/tmp', 'qpe_');
+				$t_out = tempnam('/tmp', 'qp_');
+				`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;//| lpr -P$qdest -J$qname -h`;
+				if (strlen(trim(file_get_contents($t_err)))>0) {
+					`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;//| lpr -P$qdest -J$qname -h`;
+				}
+				if (strlen(trim(file_get_contents($t_err)))==0) {
+					`lpr -P$qdest -J$qname -h $t_out 2>$t_err`;
+					if (strlen(trim(file_get_contents($t_err)))==0) {
+						$q = $this->DB->prepare(DB_J_STATUS);
+						$q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
+						$q->execute();
+					} else {
+						$q = $this->DB->prepare(DB_J_STATUS);
+						$q->bind_param('sis', strval(sprintf("Error printing to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
+						$q->execute();
+					}
+				} else {
+					$q = $this->DB->prepare(DB_J_STATUS);
+					$q->bind_param('sis', strval(sprintf("Error converting document to postscript, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
+					$q->execute();
+				}
+
+				@unlink($t_err);
+				@unlink($t_ban);
+				@unlink($t_doc);
+				@unlink($t_out);
 			}
 		}
 		header('Location: '.L_BASE);
@@ -196,17 +213,25 @@ class Doc extends QPPage {
 			ob_clean();
 			$jid = $this->g_jid;
 			$job = $this->get_job($jid, $this->s_uName);
-			$t_out = $this->make_printable($job);
-			if (strlen($t_out) && file_exists($t_out)) {
+			$t_doc = $this->make_printable($job);
+			if (strlen($t_doc) && file_exists($t_doc)) {
 				header('Content-type: application/pdf');
 				header(sprintf('Content-Disposition: attachment; filename="%s-%d.pdf"', $this->s_uName, time()));
 				ob_end_flush();
-				if (stristr($job['jtype'], 'pdf')) {
-					readfile($t_out);
-				} else {
-					passthru("gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=- $t_out");
+				$t_err = tempnam('/tmp', 'qpe_');
+				$t_out = tempnam('/tmp', 'qp_');
+				`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=$t_out $t_doc 2> $t_err`;
+				if (strlen(trim(file_get_contents($t_err)))>0) {
+					`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pdfwrite -r300 -sOutputFile=$t_out $t_doc 2> $t_err`;
+					if (strlen(trim(file_get_contents($t_err)))==0) {
+						readfile($t_out);
+					} else {
+						readfile($t_err);
+					}
 				}
-				unlink($t_out);
+				@unlink($t_err);
+				@unlink($t_doc);
+				@unlink($t_out);
 				exit;
 			}
 		}

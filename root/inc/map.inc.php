@@ -21,12 +21,12 @@ $map['Hayden'] = array(435, 345);
 ?>
 <h2>Select a Cluster Location<h2>
 <table id="clusters">
-<tr><td align="right"><span id="cluster_sel">&nbsp;</span></td></tr>
+<tr><td><span id="cluster_sel">&nbsp;</span></td></tr>
 <tr><td><div id="cluster_map">
 <?
 foreach($map as $name=>$pos) {
-	printf('<input type="button" class="cluster_b" style="left: %d; top: %d;" onMouseOver="%s" onClick="%s" id="%s" />',
-			$pos[0], $pos[1]-60,
+	printf('<input alt="%s" type="button" class="cluster_b" style="left: %d; top: %d;" onMouseOver="%s" onClick="%s" id="%s" />',
+			$name, $pos[0], $pos[1]-60,
 			"cluster_hover('$name')",
 			"location='$name/?jid=$jid';",
 			'b_'.$name);
@@ -36,19 +36,19 @@ foreach($map as $name=>$pos) {
 </div></td></tr>
 <tr><td>
 <form action="<?=L_BASE.'doc/?setup&jid='.$jid?>" method="post">
-<p style="float:right;">
-<a id="unlisted_entry" class="expert" href="#" onClick="$('unlisted_entry').hide(); $('unlisted').show();">expert mode</a>
+<span style="float:right;">
+<a id="unlisted_entry" class="expert" href="#" onClick="$('unlisted_entry').hide(); $('unlisted').show();">select an unlisted queue</a>
 <span id="unlisted" class="expert" style="display: none;">
 enter an unlisted print queue: 
 <input type="text" name="queue" size="12" />
 <input type="submit" name="save" value="save" />
 <input type="submit" name="print" value="print" />
 </span>
-</p>
+</span>
 </form>
 <?php
-printf('<p><img src="%s" /> %s</p>',
+printf('<span><img src="%s" /> %s</span>',
 	L_IMG.'lightbulb.gif',
-	'select a cluster above denoted by its green marker');
+	'select a cluster on the map above denoted by its marker');
 ?></td></tr>
 </table>

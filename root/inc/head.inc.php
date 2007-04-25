@@ -8,4 +8,8 @@
 <body>
 
 <div id="content">
-<p><h1><img src="<?=L_IMG?>yes.gif" />QuickPrint :: <?=$this->title?></h1></p>
+<p><a style="text-decoration:none;" href="<?=L_BASE?>"><h1><img src="<?=L_IMG?>yes.gif" />QuickPrint :: <?=$this->title?></h1></a></p>
+<?/*<table width="99%"><tr>
+<td><img src="<?=L_IMG?>beaver.png" /></td>
+<td width="100%"><h1>QuickPrint :: <?=$this->title?></h1></td>
+</tr></table>*/?>

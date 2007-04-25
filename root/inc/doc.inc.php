@@ -15,8 +15,9 @@ if ($this->has_errors()) {
 </table>
 
 <?php if ($this->get_job_mode($job) == 'text') { ?>
-<p><h2>Plain Text Document Settings</h2></p>
 <p><img src="<?=L_IMG?>info.gif"> PDF/PostScript document not detected.  Assuming plain-text format.</p>
+<p><h2>Plain Text Document Settings</h2></p>
+<p>The following are optional header/footer formatting settings for text documents:</p>
 <p><?=$this->error('textnup')?></p>
 <p><?=$this->error('textln')?></p>
 <p><?=$this->error('texthon')?></p>
@@ -54,9 +55,9 @@ if ($this->has_errors()) {
 
 <p><h2>Printing Properties</h2></p>
 
-<?php if (empty($job['jqueue'])) { ?>
-Choose a printer for this document by clicking "select" next to "Printer" below or print the document later by clicking "Save".
-<?php } ?>
+<?php //if (empty($job['jqueue'])) { ?>
+<p>Choose a printer for this document by clicking "select" next to "Printer" below.</p>
+<?php //} ?>
 <table>
 <tr><td colspan=2><?=$this->error('jqueue')?></td></tr>
 <tr><td>Printer:</td><td>
@@ -80,6 +81,21 @@ Choose a printer for this document by clicking "select" next to "Printer" below 
 </td></tr>
 */ ?>
 </table>
+<?/*
+<p>Soon, you'll be able to schedule this document to print within the next 24 hours by selecting a time below.<br />Email us if you'd like to be notified when this feature is working.</p>
+<table>
+<tr><td>Schedule printing for:</td><td>
+<?php
+echo '<select name="schedule" disabled>';
+echo '<option value=""></option>';
+for ($t = time() + 600; $t < time() + 86400; $t += 300) {
+	    $stamp = floor($t/300)*300-60;
+		    printf('<option value="%d">%s</option>', $stamp, strftime('%a %H:%M', $stamp));
+}
+echo '</select>';
+?>
+</table>
+*/?>
 <p><h2>Finish</h2></p>
 <table>
 <tr><td colspan=2>
@@ -91,7 +107,7 @@ Choose a printer for this document by clicking "select" next to "Printer" below 
 </form>
 <form method="get">
 <input type="hidden" name="jid" value="<?=$jid?>" />
-<input type="submit" name="del" value="Delete" />
+<?//<input type="submit" name="del" value="Delete" />?>
 </form>
 <input type="button" value="Cancel" onClick="location='<?=L_BASE?>';" />
 </td></tr>

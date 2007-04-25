@@ -1,13 +1,15 @@
-<p>QuickPrint helps you print documents to Athena cluster printers.</p>
+<p>This tool helps you print documents to Athena cluster printers.  To print your documents, you must upload them to this server.</p><?/*  You can also schedule your documents to print later.</p>*/?>
 
 <p><h2>Print New Document</h2></p>
-<p>Select a document to print from your computer: PDF, PostScript, or text.
-	<form action="doc" method="post" enctype="multipart/form-data">
+<form action="doc" method="post" enctype="multipart/form-data">
+<ol>
+<p><li>Select a document to print from your computer: PDF, PostScript, or text:</li></p>
 	<input type="hidden" name="MAX_FILE_SIZE" value="8388608" />
 	<input type="file" name="file">
-	<input type="submit" name="add" value="Upload">
-	</form>
-</p>
+<p><li>Click the following button to upload the file you selected above:</li></p>
+	<input type="submit" name="add" value="Upload Selected File">
+</form>
+</ol>
 
 <hr />
 

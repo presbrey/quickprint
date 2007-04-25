@@ -173,6 +173,8 @@ img { border: 0; }
 #cluster_map {
 	position: relative;
 	cursor: crosshair;
+	padding: 0;
+	margin: 0;
 }
 .cluster_b {
 	position: absolute;
