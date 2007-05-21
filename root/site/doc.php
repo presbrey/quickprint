@@ -228,6 +228,8 @@ class Doc extends QPPage {
 					} else {
 						readfile($t_err);
 					}
+				} else {
+					readfile($t_out);
 				}
 				@unlink($t_err);
 				@unlink($t_doc);
@@ -338,11 +340,11 @@ class Doc extends QPPage {
 				$x_a2ps .= " -{$res['textnup']}";
 				if ($res['texthon']==1) {
 					$a2ps['-b'] = strlen($res['texth']) ? $res['texth'] : '';
-					$a2ps['--left-footer='] = strlen($res['textlf']) ? $res['textlf'] : NULL;
+					$a2ps['--left-footer='] = strlen(trim($res['textlf'])) ? $res['textlf'] : NULL;
 					$a2ps['--footer='] = strlen($res['textcf']) ? $res['textcf'] : '';
 					$a2ps['--right-footer='] = strlen($res['textrf']) ? $res['textrf'] : NULL;
 					$a2ps['--left-title='] = strlen($res['textlt']) ? $res['textlt'] : '';
-					$a2ps['--center-title='] = strlen($res['textct']) ? $res['textct'] : '';
+					$a2ps['--center-title='] = strlen($res['textct']) ? trim($res['textct']) : '';
 					$a2ps['--right-title='] = strlen($res['textrt']) ? $res['textrt'] : '';
 					foreach($a2ps as $k=>$v) {
 						if (!is_null($v))
@@ -354,7 +356,7 @@ class Doc extends QPPage {
 				if ($res['textbon']==0) $x_a2ps .= ' --borders=no';
 				if ($res['textln']>0) $x_a2ps .= ' --line-numbers='.intval($res['textln']);
 				$x_a2ps .= " -o$t_pre $jfile";
-				`$x_a2ps`;
+				`$x_a2ps -f15`;
 				break;
 
 			default:

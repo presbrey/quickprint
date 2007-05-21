@@ -3,12 +3,12 @@
 <?php
 
 echo '<form method="post" action="'.L_BASE.'doc/?jid='.$jid.'">';
-echo '<table id="printers" class="list">';
-echo '<tr><td></td><th>Printer Name:</th><th>Jobs:</th></tr>';
+echo '<table id="printers" class="list" summary="Cluster Printer List">';
+echo '<tr><th></th><th scope="col">Printer Name:</th><th scope="col">Jobs:</th></tr>';
 foreach($cluster as $printer=>$jobs) {
 	printf('<tr onMouseOver="$(\'%s\').activate();" onClick="$(\'%s\').checked=true">', $printer, $printer);
 	printf('<td><input type="radio" id="%s" name="queue" value="%s" /></td>', $printer, $printer);
-	printf('<td>%s</td><td style="text-align: right;">%d</td>', $printer, $jobs);
+	printf('<td><label for="%s" id="%s">%s</td><td style="text-align: right;">%d</td>', $printer, $printer, $printer, $jobs);
 	echo '</tr>';
 }
 echo '</table><p>';

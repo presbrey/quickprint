@@ -22,34 +22,37 @@ if ($this->has_errors()) {
 <p><?=$this->error('textln')?></p>
 <p><?=$this->error('texthon')?></p>
 <p><?=$this->error('textbon')?></p>
-<table>
-<tr>
+<table><tr><td>
+<fieldset>
+<table><tr>
 <td>Pages per sheet:</td><td>
 <select name="textnup" class="text_nup">
 <?php for ($i=1; $i<=9; $i++) { ?>
 <option value="<?=$i?>"<?=$i==$job['textnup']?' selected':''?>><?=$i?></option>
 <?php } ?>
 </select></td>
-<td>Line numbering every:</td><td><input type="text" name="textln" size="1" value="<?=$job['textln']?>" /> line</td>
-<td>Sheet header:</td><td><input class="text_set" type="text" name="texth" value="<?=$job['texth']?>"<?=0==$job['texthon']?' disabled':''?>/></td>
 </tr><tr>
-<td>Left page title:</td><td><input class="text_set" type="text" name="textlt" value="<?=$job['textlt']?>"<?=0==$job['texthon']?' disabled':''?>/></td>
-<td>Center page title:</td><td><input class="text_set" type="text" name="textct" value="<?=$job['textct']?>"<?=0==$job['texthon']?' disabled':''?>/></td>
-<td>Right page title:</td><td><input class="text_set" type="text" name="textrt" value="<?=$job['textrt']?>"<?=0==$job['texthon']?' disabled':''?>/></td>
+<td>Line numbering every:</td><td><input type="text" name="textln" size="1" value="<?=$job['textln']?>" /> line(s)</td>
 </tr><tr>
-<td>Left sheet footer:</td><td><input class="text_set" type="text" name="textlf" value="<?=$job['textlf']?>"<?=0==$job['texthon']?' disabled':''?>/></td>
-<td>Center sheet footer:</td><td><input class="text_set" type="text" name="textcf" value="<?=$job['textcf']?>"<?=0==$job['texthon']?' disabled':''?>/></td>
-<td>Right sheet footer:</td><td><input class="text_set" type="text" name="textrf" value="<?=$job['textrf']?>"<?=0==$job['texthon']?' disabled':''?>/></td>
+<td>Disable column borders:</td><td>
+<input class="text_on" type="radio" id="textbon_1" name="textbon"<?=1==$job['textbon']?' checked':''?> value="1" /><label for="textbon_1" id="textbon_1">No</label>
+<input class="text_on" type="radio" id="textbon_0" name="textbon"<?=0==$job['textbon']?' checked':''?> value="0" /><label for="textbon_0" id="textbon_0">Yes</label>
+</td>
 </tr><tr>
 <td>Disable headers and footers:</td><td>
-<input class="text_on" type="radio" name="texthon"<?=1==$job['texthon']?' checked':''?> value="1" onClick="var t=$A(document.getElementsByClassName('text_set')); t.each(Form.Element.enable);" />No
-<input class="text_on" type="radio" name="texthon"<?=0==$job['texthon']?' checked':''?> value="0" onClick="var t=$A(document.getElementsByClassName('text_set')); t.each(Form.Element.disable);" />Yes
+<input class="text_on" type="radio" id="texthon_1" name="texthon"<?=1==$job['texthon']?' checked':''?> value="1" onClick="var t=$A(document.getElementsByClassName('text_set')); t.each(Form.Element.enable);" /><label for="texthon_1" id="texthon_1">No</label>
+<input class="text_on" type="radio" id="texthon_0" name="texthon"<?=0==$job['texthon']?' checked':''?> value="0" onClick="var t=$A(document.getElementsByClassName('text_set')); t.each(Form.Element.disable);" /><label for="texthon_0" id="texthon_0">Yes</label>
 </td>
-<td>Disable column borders:</td><td>
-<input class="text_on" type="radio" name="textbon"<?=1==$job['textbon']?' checked':''?> value="1" />No
-<input class="text_on" type="radio" name="textbon"<?=0==$job['textbon']?' checked':''?> value="0" />Yes
-</td>
-</table>
+</tr></table></fieldset></td><td><fieldset><table><tr>
+<tr><td>Sheet header:</td><td><input class="text_set" type="text" name="texth" value="<?=$job['texth']?>"<?=0==$job['texthon']?' disabled':''?>/></td></tr>
+<tr><td>Left page title:</td><td><input class="text_set" type="text" name="textlt" value="<?=$job['textlt']?>"<?=0==$job['texthon']?' disabled':''?>/></td></tr>
+<tr><td>Center page title:</td><td><input class="text_set" type="text" name="textct" value="<?=$job['textct']?>"<?=0==$job['texthon']?' disabled':''?>/></td></tr>
+<tr><td>Right page title:</td><td><input class="text_set" type="text" name="textrt" value="<?=$job['textrt']?>"<?=0==$job['texthon']?' disabled':''?>/></td></tr>
+<tr><td>Left sheet footer:</td><td><input class="text_set" type="text" name="textlf" value="<?=$job['textlf']?>"<?=0==$job['texthon']?' disabled':''?>/></td></tr>
+<tr><td>Center sheet footer:</td><td><input class="text_set" type="text" name="textcf" value="<?=$job['textcf']?>"<?=0==$job['texthon']?' disabled':''?>/></td></tr>
+<tr><td>Right sheet footer:</td><td><input class="text_set" type="text" name="textrf" value="<?=$job['textrf']?>"<?=0==$job['texthon']?' disabled':''?>/></td></tr>
+</table></fieldset>
+</td></tr></table>
 
 <?php } ?>
 
@@ -60,15 +63,22 @@ if ($this->has_errors()) {
 <?php //} ?>
 <table>
 <tr><td colspan=2><?=$this->error('jqueue')?></td></tr>
-<tr><td>Printer:</td><td>
-<?php printf('%s <input type="submit" name="queue" value="select" />', $job['jqueue'], L_BASE.'queue/?jid='.$jid); ?>
+<tr><td><label id="queue" for="queue">Printer:</label></td><td>
+<fieldset id="queue">
+<?
+printf('<input type="submit" name="queue" id="queue" value="select" style="float:right;" /> %s',
+	$job['jqueue']);
+?>
+</fieldset>
 </td></tr>
 <tr><td colspan=2><?=$this->error('jduplex')?></td></tr>
-<tr><td>Duplex printing:</td><td>
-<input type="radio" name="jduplex" value="0"<?=($job['jduplex']==0?' checked':'')?> />
-<label>Off</label>
-<input type="radio" name="jduplex" value="1"<?=($job['jduplex']==1?' checked':'')?> />
-<label>On</label>
+<tr><td><label for="jduplex">Duplex printing:</label></td><td>
+<fieldset id="jduplex">
+<input type="radio" name="jduplex" id="jduplex_off" value="0"<?=($job['jduplex']==0?' checked':'')?> />
+<label id="jduplex_off" for="jduplex_off">single-sided printing</label><br />
+<input type="radio" name="jduplex" id="jduplex_on" value="1"<?=($job['jduplex']==1?' checked':'')?> />
+<label id="jduplex_on" for="jduplex_on">double-sided printing</label>
+</fieldset>
 </td></tr>
 <? /*
 <tr><td colspan=2><?=$this->error('jnup')?></td></tr>

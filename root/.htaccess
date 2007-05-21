@@ -4,6 +4,17 @@
 
 RewriteEngine On
 
+RewriteCond %{HTTPS} off
+RewriteRule ^printer - [F,L]
+
+RewriteCond %{HTTPS}			on
+RewriteCond %{QUERY_STRING}		(.+)
+RewriteRule ^printer /ipp/printer.py?BASIC=%{HTTP:Authorization} [QSA,L]
+
+RewriteCond %{HTTPS}			on
+RewriteCond %{QUERY_STRING}		^$
+RewriteRule ^printer /ipp/printer.py?BASIC=%{HTTP:Authorization} [L]
+
 RewriteCond %{HTTPS}			off
 RewriteCond %{SERVER_NAME}		!quickprint\.mit\.edu
 RewriteRule ^(.*)$				http://quickprint.mit.edu/$1 [R,L,NS,QSA]

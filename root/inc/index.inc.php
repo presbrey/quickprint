@@ -30,8 +30,8 @@
 				count($jobs_by_state['NEW']==1) ? 'This' : 'These '.count($jobs_by_state['NEW']),
 				count($jobs_by_state['NEW']==1) ? '' : 's',
 				count($jobs_by_state['NEW']==1) ? 's' : 've');
-		echo '<table id="docs_new" class="list">';
-		echo '<tr><th>Document Name:</th><th>Printer</th><th>Date:</th><th colspan=4>Actions:</th></tr>';
+		echo '<table id="docs_new" class="list" summary="New Documents">';
+		echo '<tr><th scope="col">Document Name:</th><th scope="col">Printer</th><th scope="col">Date:</th><th colspan=4>Actions:</th></tr>';
 		foreach($jobs_by_state['NEW'] as $job) {
 			$jid = $job['jid'];
 			$ext = strtolower(substr(strrchr($job['jname'], "."), 1));
@@ -62,8 +62,8 @@
 	if (isset($jobs_by_state['DONE'])) {
 		$manage_documents = true;
 		echo '<p><h3>Printed Documents</h3></p>';
-		echo '<table id="docs_done" class="list">';
-		echo '<tr><th>Document Name:</th><th>Printer:</th><th>Date:</th><th colspan=3>Actions:</th><th>Status:</th></tr>';
+		echo '<table id="docs_done" class="list" summary="Printed Documents">';
+		echo '<tr><th scope="col">Document Name:</th><th scope="col">Printer:</th><th scope="col">Date:</th><th scope="col" colspan=3>Actions:</th><th scope="col">Status:</th></tr>';
 		foreach($jobs_by_state['DONE'] as $job) {
 			$ext = strtolower(substr(strrchr($job['jname'], "."), 1));
 			switch($ext) {
@@ -88,7 +88,7 @@
 		echo '</table>';
 		printf('<p><img src="%s" /> %s</p>',
 			L_IMG.'info.gif',
-			'documents can be reprinted, or downloaded by clicking their Name, and expire 3 days after their last print');
+			'Documents can be reprinted, or downloaded by clicking their Name, and expire 3 days after their last print');
 	}
 	if (!$manage_documents) {
 		echo '<p>Upload a document using the form above to start printing.</p>';
