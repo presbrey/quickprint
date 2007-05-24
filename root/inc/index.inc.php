@@ -91,8 +91,13 @@
 				default: $img = 'text.gif'; break;
 			}
 			echo '<tr>';
-			printf('<td><a href="%sdoc/?download&jid=%d"><img src="%s" /> %s</a></td>',
+			if ($job['jtype'] == 'PostScript') {
+				printf('<td><a href="%sdoc/?preview&jid=%d"><img src="%s" /> %s</a></td>',
 					L_BASE, $job['jid'], L_IMG.$img, $job['jname']);
+			} else {
+				printf('<td><a href="%sdoc/?download&jid=%d"><img src="%s" /> %s</a></td>',
+					L_BASE, $job['jid'], L_IMG.$img, $job['jname']);
+			}
 			if (empty($job['jqueue']))
 				printf('<td><a href="%s">(select)</a></td>', L_BASE.'doc/?print&jid='.$jid);
 			else
