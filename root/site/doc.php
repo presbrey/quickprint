@@ -55,6 +55,7 @@ class Doc extends QPPage {
 			//if ($this->p_jduplex < 0 || $this->p_jduplex > 1) {
 			//	$this->error_item('jduplex', 'Duplex printing: invalid selection'); return;
 			//}
+			if (intval($this->p_jcopies) != $this->p_jcopies) { $this->error_item('jcopies', 'Copies: must be a number'); }
 			if ($this->p_textnup < 0 || $this->p_textnup > 9) { $this->error_item('textnup', 'Pages per sheet: must be 1 or 2'); }
 			if ($this->p_textln < 0) { $this->error_item('textln', 'Line numbering: must 0 or more (0=disable)'); }
 			if (!in_array($this->p_texthon, array(0,1))) { $this->error_item('texthon', 'Disable headers and footers: must be Yes or No'); }
@@ -62,7 +63,7 @@ class Doc extends QPPage {
 			if (isset($this->p_schedule) && !empty($this->p_schedule)) { $this->error_item('schedule', 'Scheduling doesn\'t work yet.  Try again later.'); }
 			if (!$this->has_errors()) {
 				$q = $this->DB->prepare(DB_JO_SET);
-				$q->bind_param('iiis', $this->p_jnup, $this->p_jduplex, $jid, $this->s_uName);
+				$q->bind_param('iiiiis', $this->p_jnup, $this->p_jbanner, $this->p_jcopies, $this->p_jduplex, $jid, $this->s_uName);
 				$q->execute();
 				if ($this->get_job_mode($this->get_job($jid, $this->s_uName)) == 'text') {
 					$q = $this->DB->prepare(DB_JT_SET);
@@ -83,7 +84,7 @@ class Doc extends QPPage {
 		if (strlen($this->g_jid)) {
 			$jid = $this->g_jid;
 			if ($this->p_queue == 'select') {
-				header('Location: '.L_BASE.'printers/?jid='.$jid);
+				header('Location: '.L_BASE.'queues/?jid='.$jid);
 				exit;
 			} else {
 				$queue = $this->p_queue;
@@ -148,11 +149,14 @@ class Doc extends QPPage {
 	function queue($jid, $juser) {
 		$job = $this->get_job($jid, $juser);
 		if ($job) {
-			$t_ban = $this->make_banner($job);
+			$jbanner = ($job['jbanner'] == 1);
+			$t_ban = ($jbanner ? $this->make_banner($job) : '');
 			$t_doc = $this->make_printable($job);
-			if (file_exists($t_ban) && file_exists($t_doc) &&
-				filesize($t_ban)>0 && filesize($t_doc)>0) {
+			clearstatcache();
+			if (file_exists($t_doc) && filesize($t_doc) &&
+				(!$jbanner || (file_exists($t_ban) && filesize($t_ban)>0))) {
 				$qdest = $job['jqueue'];
+				$qcopies = $job['jcopies'];
 				if ($job['jduplex']!=0) $qdest .= '2';
 				$qname = basename($job['jfile']);
 				`/mit/quickprint/ID/renew`;
@@ -160,12 +164,12 @@ class Doc extends QPPage {
 
 				$t_err = tempnam('/tmp', 'qpe_');
 				$t_out = tempnam('/tmp', 'qp_');
-				`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;//| lpr -P$qdest -J$qname -h`;
+				`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
 				if (strlen(trim(file_get_contents($t_err)))>0) {
-					`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;//| lpr -P$qdest -J$qname -h`;
+					`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
 				}
 				if (strlen(trim(file_get_contents($t_err)))==0) {
-					`lpr -P$qdest -J$qname -h $t_out 2>$t_err`;
+					`lpr -P$qdest -J$qname -K$qcopies -h $t_out 2>$t_err`;
 					if (strlen(trim(file_get_contents($t_err)))==0) {
 						$q = $this->DB->prepare(DB_J_STATUS);
 						$q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
@@ -181,10 +185,11 @@ class Doc extends QPPage {
 					$q->execute();
 				}
 
-				@unlink($t_err);
-				@unlink($t_ban);
+				if (strlen($t_ban))
+					@unlink($t_ban);
 				@unlink($t_doc);
 				@unlink($t_out);
+				@unlink($t_err);
 			}
 		}
 		header('Location: '.L_BASE);
@@ -196,7 +201,7 @@ class Doc extends QPPage {
 			$jid = $this->g_jid;
 			$job = $this->get_job($jid, $this->s_uName);
 			if (empty($job['jqueue'])) {
-				header('Location: '.L_BASE.'printers/?jid='.$jid);
+				header('Location: '.L_BASE.'queues/?jid='.$jid);
 				exit;
 			} else {
 				$q = $this->DB->prepare(DB_J_STATE);
@@ -249,12 +254,10 @@ class Doc extends QPPage {
 			$job = $this->get_job($jid, $this->s_uName);
 			if ($job) {
 				$job_edit = true;
-				if (is_null($job['jnup']) && is_null($job['jduplex'])) {
+				if (is_null($job['jnup'])) {
 					$job_edit = false; // new
-					$job['jnup'] = 1;
-					$job['jduplex'] = 1;
 					$q = $this->DB->prepare(DB_JO_ADD);
-					$q->bind_param('isii', $jid, $this->s_uName, $job['jnup'], $job['jduplex']);
+					$q->bind_param('is', $jid, $this->s_uName);
 					$q->execute();
 					$job = $this->get_job($jid, $this->s_uName);
 					$job['texth'] = $this->s_uGecos;
@@ -356,34 +359,14 @@ class Doc extends QPPage {
 				if ($res['textbon']==0) $x_a2ps .= ' --borders=no';
 				if ($res['textln']>0) $x_a2ps .= ' --line-numbers='.intval($res['textln']);
 				$x_a2ps .= " -o$t_pre $jfile";
-				`$x_a2ps -f15`;
+				`$x_a2ps`;
+				//`$x_a2ps -f15`;
 				break;
 
 			default:
 				copy($jfile, $t_pre);
 				break;
 		}
-		/*
-		$t_nup = tempnam('/tmp', 'qp_');
-		rename($t_nup, "$t_nup.ps");
-		$t_nup = "$t_nup.ps";
-
-		switch($res['jnup']) {
-			case 2:
-				//echo `pdf2ps $t_pre - > $t_nup`;
-				`pdf2ps $t_pre - | psnup -nup 2 - $t_nup`;
-				//`pdfnup --paper letterpaper --nup 2x1 --orient landscape $t_pre --outfile $t_nup`;
-				break;
-			case 4:
-				//echo `pdf2ps $t_pre - | psnup -nup 4 $t_nup`;
-				`pdfnup --paper letterpaper --nup 2x2 --orient portrait $t_pre --outfile $t_nup`;
-				break;
-			default:
-				rename($t_pre, $t_nup);
-				break;
-		}
-		@unlink($t_pre);
-		return $t_nup;*/
 		return $t_pre;
 	}
 

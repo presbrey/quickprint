@@ -66,11 +66,22 @@ if ($this->has_errors()) {
 <tr><td><label id="queue" for="queue">Printer:</label></td><td>
 <fieldset id="queue">
 <?
-printf('<input type="submit" name="queue" id="queue" value="select" style="float:right;" /> %s',
+printf('%s <input type="submit" name="queue" id="queue" value="select" />',
 	$job['jqueue']);
 ?>
 </fieldset>
 </td></tr>
+<tr><td colspan=2><?=$this->error('jbanner')?></td></tr>
+<tr><td><label for="jbanner">Print banner:</label></td><td>
+<fieldset id="jbanner">
+<input type="radio" name="jbanner" id="jbanner_off" value="0"<?=($job['jbanner']==0?' checked':'')?> />
+<label id="jbanner_off" for="jbanner_off">banner page off</label><br />
+<input type="radio" name="jbanner" id="jbanner_on" value="1"<?=($job['jbanner']==1?' checked':'')?> />
+<label id="jbanner_on" for="jbanner_on">banner page on</label>
+</fieldset>
+</td></tr>
+<tr><td colspan=2><?=$this->error('jcopies')?></td></tr>
+<tr><td><label for="jcopies">Copies:</label></td><td><input type="text" name="jcopies" id="jcopies" value="<?=$job['jcopies']?>" size=4 class="raw" /></td></tr>
 <tr><td colspan=2><?=$this->error('jduplex')?></td></tr>
 <tr><td><label for="jduplex">Duplex printing:</label></td><td>
 <fieldset id="jduplex">
@@ -115,10 +126,10 @@ echo '</select>';
 <input type="submit" name="save" value="Save" />
 <input type="submit" name="preview" value="Preview" />
 </form>
-<form method="get">
+<?/*<form method="get">
 <input type="hidden" name="jid" value="<?=$jid?>" />
-<?//<input type="submit" name="del" value="Delete" />?>
-</form>
+<input type="submit" name="del" value="Delete" />
+</form>*/?>
 <input type="button" value="Cancel" onClick="location='<?=L_BASE?>';" />
 </td></tr>
 </table>

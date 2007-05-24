@@ -21,7 +21,7 @@ try:
 		(authu, authp) = webauth.decode('base64').split(':')
 		db=MySQLdb.connect(read_default_file="/mit/quickprint/.my.cnf")
 		c = db.cursor()
-		c.execute("SELECT user FROM puser WHERE user=%s AND pass=%s", (authu,authp,))
+		c.execute("SELECT 1 FROM auth WHERE auser=%s AND apass=%s LIMIT 1", (authu,authp,))
 		if c.fetchone() is None:
 			authfail = True
 except Exception, e:

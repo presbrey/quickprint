@@ -1,7 +1,7 @@
 <?php
 
-class Printers extends QPPage {
-	var $title = 'Printers';
+class Queues extends QPPage {
+	var $title = 'Queues';
 //	var $handlers = array('post' => array('p_add', 'p_setup', 'g_setup'),
 //						  'get'  => array('g_download', 'g_print', 'g_preview', 'g_setup','g_del'));
 	function _default() {

@@ -1,15 +1,29 @@
 <p>This tool helps you print documents to Athena cluster printers.  To print your documents, you must upload them to this server.</p><?/*  You can also schedule your documents to print later.</p>*/?>
 
 <p><h2>Print New Document</h2></p>
+<p>Upload a document to print from your hard disk, or install QuickPrint as a network printer:</p>
+<table>
+<tr><td style="border: 1px outset black; padding: 5px" width="320">
+<p><h3>Upload a Document from your Hard Disk</h3></p>
+<p>QuickPrint supports uploading documents in PDF, PostScript, and ASCII text formats.</p>
 <form action="doc" method="post" enctype="multipart/form-data">
 <ol>
-<p><li>Select a document to print from your computer: PDF, PostScript, or text:</li></p>
+<p><li>Select a document to print from your computer:</li></p>
 	<input type="hidden" name="MAX_FILE_SIZE" value="8388608" />
 	<input type="file" name="file">
-<p><li>Click the following button to upload the file you selected above:</li></p>
+<p><li>Click the following button to upload the selected file:</li></p>
 	<input type="submit" name="add" value="Upload Selected File">
-</form>
 </ol>
+</form>
+</td><td style="border: 1px solid gray" width="325">
+<p><h3>Print directly to the QuickPrint Network Printer</h3></p>
+<p>Windows XP users can install QuickPrint as a network printer for use under File-&gt;Print.  All document formats are supported by this method.</p>
+<ol>
+<p><li><a href="<?=L_BASE?>faq/ipp">Install QuickPrint as a network printer</a>.</li></p>
+<p><li><a href="<?=L_BASE?>">Refresh this page</a> after printing your document.  All printed documents are listed below.</li></p>
+</ol>
+</td>
+</tr></table>
 
 <hr />
 
@@ -41,8 +55,13 @@
 				default: $img = 'text.gif'; break;
 			}
 			echo '<tr>';
-			printf('<td><a href="%sdoc/?download&jid=%d"><img src="%s" /> %s</a></td>',
+			if ($job['jtype'] == 'PostScript') {
+				printf('<td><a href="%sdoc/?preview&jid=%d"><img src="%s" /> %s</a></td>',
 					L_BASE, $job['jid'], L_IMG.$img, $job['jname']);
+			} else {
+				printf('<td><a href="%sdoc/?download&jid=%d"><img src="%s" /> %s</a></td>',
+					L_BASE, $job['jid'], L_IMG.$img, $job['jname']);
+			}
 			if (empty($job['jqueue']))
 				printf('<td><a href="%s">(select)</a></td>', L_BASE.'doc/?print&jid='.$jid);
 			else
@@ -86,9 +105,11 @@
 			echo '</tr>';
 		}
 		echo '</table>';
+		/*
 		printf('<p><img src="%s" /> %s</p>',
 			L_IMG.'info.gif',
 			'Documents can be reprinted, or downloaded by clicking their Name, and expire 3 days after their last print');
+		*/
 	}
 	if (!$manage_documents) {
 		echo '<p>Upload a document using the form above to start printing.</p>';
