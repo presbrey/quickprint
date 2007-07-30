@@ -25,6 +25,7 @@ $mapname['W20'] = 'Student Center';
 
 ?>
 <h2>Select a Cluster Location</h2>
+<div id="clusters">
 <table id="clusters">
 <form action="<?=L_BASE.'doc/?setup&jid='.$jid?>" method="post">
 <tr>
@@ -38,7 +39,29 @@ enter an unlisted queue name:
 <input type="submit" name="print" value="print" />
 </span>
 </td></tr>
-<tr><td colspan=2><div id="cluster_map">
+<tr><td colspan=2>
+<?php
+$queues_recent = $this->queues_recent($this->s_uName);
+if (count($queues_recent))
+    $queues_recent = array_map('array_shift',$queues_recent);
+if (count($queues_recent)) {
+?>
+<div id="queues_recent">
+    <h3>Recent Queues:</h3>
+    <?php
+    $i = 0;
+    echo '<table><tr>';
+    foreach($queues_recent as $queue) {
+        if ($i%3==0) echo '<tr>';
+        printf('<td><a href="%sdoc/?setup&jid=%d&queue=%s&save">%s</a></td>',
+            L_BASE, $jid, $queue, $queue);
+        if ($i++%3==2) echo '</tr>';
+    }
+    echo '</tr></table>';
+    echo '</div>';
+}
+?>
+<div id="clusters_map">
 <?
 foreach($map as $name=>$pos) {
 	$desc = isset($mapname[$name]) ? $mapname[$name] : NULL;
@@ -51,7 +74,8 @@ foreach($map as $name=>$pos) {
 }
 ?>
 <img src="<?=L_IMG?>map2.jpg" style="border: 1px solid black;" />
-</div></td></tr>
+</div>
+</td></tr>
 </form>
 <tr><td colspan=2>
 <?php
@@ -60,3 +84,4 @@ printf('<span><img src="%s" /> %s</span>',
 	'select a cluster on the map above denoted by its marker');
 ?></td></tr>
 </table>
+</div>

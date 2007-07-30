@@ -37,6 +37,15 @@ class Queues extends QPPage {
 			exit;
 		}
 	}
+    function queues_recent($user) {
+        $q = $this->DB->query(sprintf(DB_JQ_RECENT,
+            $this->DB->real_escape_string($user)));
+        while($row = $q->fetch_row()) {
+            $res[] = $row;
+        }
+        if (isset($res))
+            return $res;
+    }
 }
 
 ?>

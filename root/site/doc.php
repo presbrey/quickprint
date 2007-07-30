@@ -3,7 +3,7 @@
 class Doc extends QPPage {
 	var $title = 'Document';
 	var $handlers = array('post' => array('p_add', 'p_setup', 'p_queue', 'g_setup', 'p_print', 'p_preview'),
-						  'get'  => array('g_download', 'g_print', 'g_preview', 'g_setup','g_del'));
+						  'get'  => array('g_queue', 'g_download', 'g_print', 'g_preview', 'g_setup','g_del'));
 
 	function p_add() {
 		$file = $this->f_file;
@@ -105,6 +105,12 @@ class Doc extends QPPage {
 			exit;
 		}
 	}
+
+    function g_queue() {
+        $this->p_queue = $this->g_queue;
+        $this->p_save = $this->g_save;
+        $this->p_queue();
+    }
 
 	function p_select() {
 		if (strlen($this->g_jid)) {

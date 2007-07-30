@@ -19,3 +19,6 @@ define('DB_JO_ADD', 'INSERT INTO jobopt (jid, juser) VALUES (?,?)');
 define('DB_JO_SET', 'UPDATE jobopt SET jnup=?, jbanner=?, jcopies=?, jduplex=? WHERE jid=? AND juser=?');
 
 define('DB_JT_SET', 'UPDATE jobopt SET textnup=?,textln=?,texthon=?,textbon=?,texth=?,textlt=?,textct=?,textrt=?,textlf=?,textcf=?,textrf=? WHERE jid=? AND juser=?');
+
+
+define('DB_JQ_RECENT', "SELECT DISTINCT * FROM (SELECT jqueue FROM job j WHERE juser='%s' AND jqueue IS NOT NULL ORDER BY dupdated DESC) as t_jqueue LIMIT 10");

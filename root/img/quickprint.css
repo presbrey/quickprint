@@ -171,7 +171,10 @@ img { border: 0; }
 
 /* other */
 
-#cluster_map {
+#clusters {
+    position: relative;
+}
+#clusters_map {
 	position: relative;
 	cursor: crosshair;
 	padding: 0;
@@ -237,4 +240,13 @@ input.raw {
 }
 fieldset {
 	margin: 0;
+}
+#queues_recent {
+    border: 2px dashed silver;
+    position: absolute;
+    left: 600px;
+    top: 325px;
+    width: 200px;
+    height: 100px;
+    z-index: 1;
 }
