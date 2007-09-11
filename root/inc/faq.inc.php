@@ -15,7 +15,7 @@ switch($entry) {
 <tr><td>Printer Username:</td><td><input type="text" id="auser" name="auser" value="<?=strtolower($this->s_uName)?>" size=35 class="raw" readonly="readonly" onMouseUp="this.select()" /></td></tr>
 <tr><td>Printer Password:</td><td><input type="text" id="apass" name="apass" value="<?=User::ipp_get_pass($this->s_uName)?>" size=35 class="raw" readonly="readonly" onMouseUp="this.select()" /></td></tr>
 </table>
-<p><img src="<?=L_IMG?>info.gif" /> Windows does not support using personal MIT certificates to authenticate to network printers.  Instead, use this password when installing the QuickPrint printer.  You may <a href="<?=L_BASE?>user/setup">change your printer password</a> if you prefer something else.</p>
+<p><img src="<?=L_IMG?>info.gif" /> Windows and Mac do not support using personal MIT certificates to authenticate to network printers.  Instead, use this password when installing the QuickPrint printer.  You may <a href="<?=L_BASE?>user/setup">change your printer password</a> if you prefer something else.</p>
 <?php } ?>
 
 <p><h2>Installing QuickPrint as a Network Printer on Windows XP</h2></p>
@@ -29,6 +29,20 @@ switch($entry) {
 <li>Select whether you want to use QuickPrint as the default printer at the next prompt, click <strong>Next</strong>, and click <strong>Finish</strong>.</li>
 </ol>
 
+<p><a name="osx"></a><h2>Installing QuickPrint as a Network Printer on Mac OS X</h2></p>
+<ol style="line-height: 2em">
+<li>Start the <strong>Printer Setup Utility</strong> and select <strong>Add</strong> from toolbar or the <strong>Printers->Add Printer...</strong> menu.
+<li>A <em>Printer Browser</em> window appears.  Hold <strong>Option</strong> on the keyboard and click <strong>More Printers...</strong>.
+<li>A modal dialog window is superimposed.  Select <strong>Advanced</strong> from the first dropdown.</li>
+<li>Select the <strong>Internet Printing Protocol using HTTP</strong> option at the <em>Device</em> prompt.</li>
+<li>Enter <strong>quickprint</strong> at the <em>Device Name</em> prompt.</li>
+<li>Enter the URI listed below these instructions at the <strong>Device URI</strong> prompt.</li>
+<li>Select <strong>HP</strong> at the <em>Printer Model</em> prompt, <strong>HP Color LaserJet 9500</strong> from the selection pane that follows, and click <strong>Add</strong>.</li>
+</ol>
+<table>
+<tr><td>Device URI (replace below):</td><td><input type="text" id="URL" name="URL" value="http://<?=strtolower($this->s_uName)?>:<?=User::ipp_get_pass($this->s_uName)?>@quickprint.mit.edu/printer/" size=60 class="raw" readonly="readonly" onMouseUp="this.select()" style="text-align: center" /></td></tr>
+<tr><td colspan=2><img src="<?=L_IMG?>osx-10.4.png" style="border: 2px dashed #647d40; padding: 5px;" /></td></tr>
+</table>
 <?php
 		break;
 

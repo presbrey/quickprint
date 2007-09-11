@@ -14,7 +14,12 @@ $pass = $this->ipp_get_pass($this->s_uName);
 <tr><td colspan=2><?=$this->error('')?></td></tr>
 <tr><td>Password:</td><td><input type="text" name="apass" id="apass" value="<?=$pass?>" style="font-family: Courier" /></td></tr>
 <tr><td colspan=2>
-<p><img src="<?=L_IMG?>info.gif"> Windows will ask you for this password <br />when you <a href="/faq/ipp">install the printer</a>.  If you change <br />your printer password, Windows printers <br />using the old password will need to be <br />reinstalled.</p>
+<p><img src="<?=L_IMG?>info.gif">
+You will use this password when<br />
+<a href="/faq/ipp">installing the printer</a> on your personal<br />
+computer.  If you change your printer<br />
+password, printers using the old<br />
+password will need reinstallation.</p>
 </td></tr>
 </table>
 

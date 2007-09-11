@@ -17,7 +17,7 @@
 </form>
 </td><td style="border: 1px solid gray" width="325">
 <p><h3>Print directly to the QuickPrint Network Printer</h3></p>
-<p>Windows XP users can install QuickPrint as a network printer for use under File-&gt;Print.  All document formats are supported by this method.</p>
+<p>Windows XP and Mac users can install QuickPrint as a network printer for use under File-&gt;Print.  All document formats are supported by this method.</p>
 <ol>
 <p><li><a href="<?=L_BASE?>faq/ipp">Install QuickPrint as a network printer</a>.</li></p>
 <p><li><a href="<?=L_BASE?>">Refresh this page</a> after printing your document.  All printed documents are listed below.</li></p>
