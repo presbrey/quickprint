@@ -163,6 +163,8 @@ class Doc extends QPPage {
 				(!$jbanner || (file_exists($t_ban) && filesize($t_ban)>0))) {
 				$qdest = $job['jqueue'];
 				$qcopies = $job['jcopies'];
+                if (intval($qcopies) < 1)
+                    $qcopies = 1;
 				if ($job['jduplex']!=0) $qdest .= '2';
 				$qname = basename($job['jfile']);
 				`/mit/quickprint/ID/renew`;
@@ -174,7 +176,8 @@ class Doc extends QPPage {
 				if (strlen(trim(file_get_contents($t_err)))>0) {
 					`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
 				}
-				if (strlen(trim(file_get_contents($t_err)))==0) {
+				//if (strlen(trim(file_get_contents($t_err)))==0) {
+				if (filesize($t_out)>0) {
 					`lpr -P$qdest -J$qname -K$qcopies -h $t_out 2>$t_err`;
 					if (strlen(trim(file_get_contents($t_err)))==0) {
 						$q = $this->DB->prepare(DB_J_STATUS);
@@ -184,11 +187,17 @@ class Doc extends QPPage {
 						$q = $this->DB->prepare(DB_J_STATUS);
 						$q->bind_param('sis', strval(sprintf("Error printing to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
 						$q->execute();
+                        $q = $this->DB->prepare("INSERT INTO joberr (jid,jerr,derr) VALUES (?,?,NOW())");
+                        $q->bind_param('is', $jid, trim(file_get_contents($t_err)));
+                        $q->execute();
 					}
 				} else {
 					$q = $this->DB->prepare(DB_J_STATUS);
 					$q->bind_param('sis', strval(sprintf("Error converting document to postscript, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
 					$q->execute();
+                    $q = $this->DB->prepare("INSERT INTO joberr (jid,jerr,derr) VALUES (?,?,NOW())");
+                    $q->bind_param('is', $jid, trim(file_get_contents($t_err)));
+                    $q->execute();
 				}
 
 				if (strlen($t_ban))
