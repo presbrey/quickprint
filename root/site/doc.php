@@ -172,9 +172,9 @@ class Doc extends QPPage {
 
 				$t_err = tempnam('/tmp', 'qpe_');
 				$t_out = tempnam('/tmp', 'qp_');
-				`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
+				`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
 				if (strlen(trim(file_get_contents($t_err)))>0) {
-					`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pswrite -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
+					`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -dDOINTERPOLATE -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
 				}
 				//if (strlen(trim(file_get_contents($t_err)))==0) {
 				if (filesize($t_out)>0) {
@@ -240,9 +240,9 @@ class Doc extends QPPage {
 				ob_end_flush();
 				$t_err = tempnam('/tmp', 'qpe_');
 				$t_out = tempnam('/tmp', 'qp_');
-				`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=$t_out $t_doc 2> $t_err`;
+				`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -sOutputFile=$t_out $t_doc 2> $t_err`;
 				if (strlen(trim(file_get_contents($t_err)))>0) {
-					`gs -q -dBATCH -dSAFER -dNOPAUSE -sDEVICE=pdfwrite -r300 -sOutputFile=$t_out $t_doc 2> $t_err`;
+					`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -dDOINTERPOLATE -r300 -sOutputFile=$t_out $t_doc 2> $t_err`;
 					if (strlen(trim(file_get_contents($t_err)))==0) {
 						readfile($t_out);
 					} else {
@@ -379,7 +379,8 @@ class Doc extends QPPage {
 				break;
 
 			default:
-				copy($jfile, $t_pre);
+				// copy($jfile, $t_pre);
+                `egrep -v '{.+setpagedevice.*}.*{.+setpagedevice.*}' $jfile > $t_pre`;
 				break;
 		}
 		return $t_pre;
