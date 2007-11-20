@@ -16,6 +16,10 @@ from shutil import move
 
 authfail = False
 try:
+    printer_uri = 'http://%s%s' % (os.environ['SERVER_NAME'], os.environ['REQUEST_URI'])
+except:
+    pass
+try:
     argv = cgi.parse(os.environ['QUERY_STRING'])
     webauth = argv['BASIC']
     if type(webauth) is list:
@@ -37,8 +41,6 @@ if authfail:
     print "Status: 401 Authorization Required"
     print "WWW-Authenticate: Basic realm=\"QuickPrint\""
     print "Content-type: application/ipp\n"
-    #f = file('/tmp/quickprint/printer-auth-fail.txt','a')
-    #f.write(str(os.environ) + "\n" + sys.stdin.read() + "\n")
     sys.exit(0)
 else:
     AUTH = authu.lower()
@@ -64,32 +66,24 @@ class IPPServer(object):
         response._operation_attributes[0] = filter( \
             lambda x: x[0] in ('attributes-charset', 'attributes-natural-language', 'printer-uri'),
             request._operation_attributes[0])
-#            lambda x: x[0] in ('attributes-charset', 'attributes-natural-language'),
-#            request._operation_attributes[0])
 
+        # f = file('/tmp/quickprint/printer2.log','a')
+        # f.write("\n" + "*"*80 + "\n")
+        # f.write(str(request))
         if handler is not None:
             response.setOperationId(handler(request, response))
             data_out = response.dump()
             response_out.write(data_out)
             response_test = IPPRequest(data=data_out)
             response_test.parse()
-#            f = file('/tmp/quickprint/printer-in.txt','a')
-#            f.write(data_in + "*")
-#            #f.close()
 #            f.write("\n" + "-"*80 + "\n")
-#            f.write(data_out)
-#            f.write("\n" + "-"*80 + "\n")
+#            f.write(str(response_test))
+        # f.close()
 #            f.write(str(request))
 #            f.write("\n" + "-"*80 + "\n")
 #            f.write(str(response_test))
 #            f.write("\n" + "*"*80 + "\n")
 #            f.close()
-#        else:
-#            f = file('/tmp/quickprint/printer.txt','a')
-#            #f.write("-"*80 + "\n")
-#            f.write(data_in + "\n")
-#            f.write(str(request))
-#            f.write("*"*80 + "\n")
 #            f.close()
 
     def _operation_2(self, request, response):
@@ -113,13 +107,42 @@ class IPPServer(object):
         c.execute("UPDATE job SET jfile=%s, dupdated=NOW() WHERE jid=%s", \
                 (jfile, str(jid),))
         response._job_attributes = [[ \
-            ('job-id', [('integer', 100)]), \
-            ('job-uri', [('uri', 'http://quickprint.mit.edu/job/100')]), \
-            ('job-state', [('enum', ipplib.IPP_JOB_COMPLETE)])]]
+            ('job-id', [('integer', jid)]), \
+            ('printer-uri', [('uri', printer_uri)]), \
+            ('job-state', [('enum', ipplib.IPP_JOB_HELD)])]]
+        return ipplib.IPP_OK
+
+    def _operation_8(self, request, response):
+        """delete-job response"""
+        opattr = filter(lambda x: x[0] in ('job-id'),
+            request._operation_attributes[0])
+        if len(opattr) and opattr[0][0] == 'job-id':
+            jid = opattr[0][1][0][1]
+            c = db.cursor()
+            c.execute("UPDATE job SET jstate = 'DEL' WHERE juser = %s AND jid = %s", \
+                (AUTH, int(jid)))
         return ipplib.IPP_OK
 
     def _operation_10(self, request, response):
         """get-jobs response"""
+        c = db.cursor()
+        c.execute("SELECT jid, jname, jsize, jstate FROM job WHERE juser = %s AND jstate != %s ORDER BY dadded", \
+            (AUTH, 'DEL',))
+        response._job_attributes = []
+        for x in c.fetchall():
+            if x[3] == 'NEW':
+                state = ipplib.IPP_JOB_HELD
+            elif x[3] == 'DONE':
+                state = ipplib.IPP_JOB_COMPLETE
+            else:
+                state = 0
+            response._job_attributes.append([ \
+                ('job-id', [('integer', x[0])]), \
+                ('job-name', [('nameWithoutLanguage', x[1])]), \
+                ('job-originating-user-name', [('nameWithoutLanguage', AUTH)]), \
+                ('job-k-octets', [('integer', x[2]/1024)]), \
+                ('job-state', [('enum', state)])
+            ])
         return ipplib.IPP_OK
 
     def _operation_11(self, request, response):
