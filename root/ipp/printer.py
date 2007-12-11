@@ -118,6 +118,21 @@ class IPPServer(object):
                 (AUTH, int(jid)))
         return ipplib.IPP_OK
 
+    def _operation_9(self, request, response):
+        """get-job-properties response"""
+        opattr = filter(lambda x: x[0] in ('job-id'),
+            request._operation_attributes[0])
+        if len(opattr) and opattr[0][0] == 'job-id':
+            jid = opattr[0][1][0][1]
+        response._job_attributes.append([ \
+            ('job-id', [('integer', jid)]), \
+        #    ('job-name', [('nameWithoutLanguage', x[1])]), \
+            ('job-originating-user-name', [('nameWithoutLanguage', AUTH)]), \
+        #    ('job-k-octets', [('integer', x[2]/1024)]), \
+            ('job-state', [('enum', ipplib.IPP_JOB_COMPLETE)])
+        ])
+        return ipplib.IPP_OK
+
     def _operation_10(self, request, response):
         """get-jobs response"""
         c = db.cursor()
