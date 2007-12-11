@@ -88,8 +88,8 @@ class Doc extends QPPage {
 				exit;
 			} else {
 				$queue = $this->p_queue;
-				while (substr($queue, -1, 1) == '2')
-					$queue = substr($queue, 0, -1);
+				//while (substr($queue, -1, 1) == '2')
+				//	$queue = substr($queue, 0, -1);
 				if (strlen($queue)) {
 					$q = $this->DB->prepare(DB_J_SETQ);
 					$q->bind_param('sis', $queue, $jid, $this->s_uName);
@@ -165,20 +165,20 @@ class Doc extends QPPage {
 				$qcopies = $job['jcopies'];
                 if (intval($qcopies) < 1)
                     $qcopies = 1;
-				if ($job['jduplex']!=0) $qdest .= '2';
+				//if ($job['jduplex']!=0) $qdest .= '2';
+                $jdup = $job['jduplex']!=0?'-Zduplex':'';
 				$qname = basename($job['jfile']);
 				`/mit/quickprint/ID/renew`;
 				putenv('KRB5CCNAME=/tmp/krb5cc_536886204');
 
 				$t_err = tempnam('/tmp', 'qpe_');
-				$t_out = tempnam('/tmp', 'qp_');
-				`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
-				if (strlen(trim(file_get_contents($t_err)))>0) {
-					`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -dDOINTERPOLATE -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
-				}
-				//if (strlen(trim(file_get_contents($t_err)))==0) {
-				if (filesize($t_out)>0) {
-					`lpr -P$qdest -J$qname -K$qcopies -h $t_out 2>$t_err`;
+				//$t_out = tempnam('/tmp', 'qp_');
+				//`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
+				//if (strlen(trim(file_get_contents($t_err)))>0) {
+				//	`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -dDOINTERPOLATE -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
+				//}
+				if (filesize($t_doc)>0) {
+					`lpr -P$qdest -J$qname -K$qcopies $jdup -h $t_ban $t_doc 2>$t_err`;
 					if (strlen(trim(file_get_contents($t_err)))==0) {
 						$q = $this->DB->prepare(DB_J_STATUS);
 						$q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
@@ -202,8 +202,9 @@ class Doc extends QPPage {
 
 				if (strlen($t_ban))
 					@unlink($t_ban);
-				@unlink($t_doc);
-				@unlink($t_out);
+                if (substr($t_doc, 0, 4) == '/tmp')
+                    @unlink($t_doc);
+				//@unlink($t_out);
 				@unlink($t_err);
 			}
 		}
@@ -252,7 +253,8 @@ class Doc extends QPPage {
 					readfile($t_out);
 				}
 				@unlink($t_err);
-				@unlink($t_doc);
+                if (substr($t_doc, 0, 4) == '/tmp')
+                    @unlink($t_doc);
 				@unlink($t_out);
 				exit;
 			}
@@ -318,8 +320,8 @@ class Doc extends QPPage {
 	function get_job_mode($job) {
 		$jmode = 'raw';
 		stristr($job['jtype'], 'text') && $jmode = 'text';
-		stristr($job['jtype'], 'postscript') && $jmode = 'adobe-ps';
-		stristr($job['jtype'], 'pdf') && $jmode = 'adobe-pdf';
+		stristr($job['jtype'], 'postscript') && $jmode = 'ps';
+		stristr($job['jtype'], 'pdf') && $jmode = 'pdf';
 		return $jmode;
 	}
 
@@ -328,7 +330,7 @@ class Doc extends QPPage {
 		rename($t_pre, "$t_pre.ps");
 		$t_pre = "$t_pre.ps";
 
-		$x_ban = sprintf('(%sbanner -n %s -J %s -P %s %s) > %s',
+		$x_ban = sprintf('(%sbanner -n %s -J %s -P %s %s) | psset -q -s - > %s',
 			P_BIN,
 			escapeshellarg($res['juser']),
 			escapeshellarg($res['jname']),
@@ -375,12 +377,17 @@ class Doc extends QPPage {
 				if ($res['textln']>0) $x_a2ps .= ' --line-numbers='.intval($res['textln']);
 				$x_a2ps .= " -o$t_pre $jfile";
 				`$x_a2ps`;
-				//`$x_a2ps -f15`;
 				break;
 
+            case 'pdf':
+                `pdf2ps $jfile $t_pre`;
+                break;
+
 			default:
-				// copy($jfile, $t_pre);
-                `egrep -v '{.+setpagedevice.*}.*{.+setpagedevice.*}' $jfile > $t_pre`;
+				//copy($jfile, $t_pre);
+                //`egrep -v '{.+setpagedevice.*}.*{.+setpagedevice.*}' $jfile > $t_pre`;
+                unlink($t_pre);
+                $t_pre = $jfile;
 				break;
 		}
 		return $t_pre;

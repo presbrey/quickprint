@@ -386,8 +386,8 @@ class IPPRequest :
                     mybuffer.append("%s attributes :" % attrtype.title())
                 for (name, value) in attribute :
                     mybuffer.append("  %s : %s" % (name, value))
-        if self.data :
-            mybuffer.append("IPP datas : %s" % repr(self.data))
+        # if self.data :
+        #     mybuffer.append("IPP datas : %s" % repr(self.data))
         return "\n".join(mybuffer)
         
     def logDebug(self, msg) :

@@ -1,11 +1,17 @@
 RewriteEngine On
 
 RewriteBase /~quickprint
+
+RewriteRule ^(authpy.*)$ dev/main.py/$1 [L,QSA]
 RewriteRule ^auth.*$ root/auth.php [L,QSA]
 
 RewriteCond %{SERVER_NAME} scripts.mit.edu
 RewriteRule ^ http://quickprint.mit.edu [R]
 
+<Files "main.py">
+	SSLVerifyDepth 2
+	SSLVerifyClient optional
+</Files>
 <Files "auth.php">
 	SSLVerifyDepth 2
 	SSLVerifyClient optional

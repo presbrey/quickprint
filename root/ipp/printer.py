@@ -76,15 +76,10 @@ class IPPServer(object):
             response_out.write(data_out)
             response_test = IPPRequest(data=data_out)
             response_test.parse()
-#            f.write("\n" + "-"*80 + "\n")
-#            f.write(str(response_test))
+        #     f.write("\n" + "-"*80 + "\n")
+        #     f.write(str(response_test))
+        # f.write("\n" + "*"*80 + "\n")
         # f.close()
-#            f.write(str(request))
-#            f.write("\n" + "-"*80 + "\n")
-#            f.write(str(response_test))
-#            f.write("\n" + "*"*80 + "\n")
-#            f.close()
-#            f.close()
 
     def _operation_2(self, request, response):
         """print-job response"""

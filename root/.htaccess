@@ -1,17 +1,12 @@
-#<Files *.php>
-#	SetHandler fcgid-script
-#</Files>
-
 RewriteEngine On
 
-#RewriteCond %{HTTPS} off
-#RewriteRule ^printer - [F,L]
+RewriteCond %{QUERY_STRING}		(.+)
+RewriteRule ^printer2 /ipp/printer2.py?BASIC=%{HTTP:Authorization} [QSA,L]
+RewriteCond %{QUERY_STRING}		^$
+RewriteRule ^printer2 /ipp/printer2.py?BASIC=%{HTTP:Authorization} [L]
 
-#RewriteCond %{HTTPS}			on
 RewriteCond %{QUERY_STRING}		(.+)
 RewriteRule ^printer /ipp/printer.py?BASIC=%{HTTP:Authorization} [QSA,L]
-
-#RewriteCond %{HTTPS}			on
 RewriteCond %{QUERY_STRING}		^$
 RewriteRule ^printer /ipp/printer.py?BASIC=%{HTTP:Authorization} [L]
 
