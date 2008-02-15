@@ -76,6 +76,21 @@ switch($entry) {
 <?php
 		break;
 
+    case 'support':
+?>
+<h2>Known Issues</h2>
+<ul style="line-height: 2em">
+<li>User documents cannot be manipulated in Athena queues once "printed" from QuickPrint.</li>
+<li>Some malformed PostScript documents print only a banner page.</li>
+</ul>
+<p>We regret that no solutions are currently available for these issues.</p>
+
+<h2>Getting Support</h2>
+<p>Please email quickprint@mit.edu for all support issues.</p>
+
+<?php
+        break;
+
 	default:
 ?>
 <p><h2>Unknown FAQ Entry</h2></p>

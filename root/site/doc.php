@@ -178,18 +178,29 @@ class Doc extends QPPage {
 				//	`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -dDOINTERPOLATE -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
 				//}
 				if (filesize($t_doc)>0) {
-					`lpr -P$qdest -J$qname -K$qcopies $jdup -h $t_ban $t_doc 2>$t_err`;
-					if (strlen(trim(file_get_contents($t_err)))==0) {
+					`lpr -V -P$qdest -J$qname -K$qcopies $jdup -h $t_ban $t_doc 2>$t_err`;
+                    $lpr_err = trim(file_get_contents($t_err));
+					if (strlen($lpr_err)==0) {
 						$q = $this->DB->prepare(DB_J_STATUS);
-						$q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
+						$q->bind_param('sis', strval(sprintf("Error printing to %s (null), %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
 						$q->execute();
 					} else {
-						$q = $this->DB->prepare(DB_J_STATUS);
-						$q->bind_param('sis', strval(sprintf("Error printing to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
-						$q->execute();
-                        $q = $this->DB->prepare("INSERT INTO joberr (jid,jerr,derr) VALUES (?,?,NOW())");
-                        $q->bind_param('is', $jid, trim(file_get_contents($t_err)));
-                        $q->execute();
+                        $r = preg_match_all("/^done job 'quickprint@[^\+]+\+(\d+)' transfer/m", $lpr_err, $m);
+                        if ($r > 0 && count($m) > 1 && count($m[1]) > 0) {
+                            $q = $this->DB->prepare(DB_S_ADD);
+                            $q->bind_param('isi', $jid, $job['jqueue'], $m[1][0]);
+                            $q->execute();
+                            $q = $this->DB->prepare(DB_J_STATUS);
+                            $q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
+                            $q->execute();
+                        } else {
+                            $q = $this->DB->prepare("INSERT INTO joberr (jid,jerr,derr) VALUES (?,?,NOW())");
+                            $q->bind_param('is', $jid, $lpr_err);
+                            $q->execute();
+                            $q = $this->DB->prepare(DB_J_STATUS);
+                            $q->bind_param('sis', strval(sprintf("Error printing to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
+                            $q->execute();
+                        }
 					}
 				} else {
 					$q = $this->DB->prepare(DB_J_STATUS);

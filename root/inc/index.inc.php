@@ -1,4 +1,4 @@
-<p>This tool helps you print documents to Athena cluster printers.  To print your documents, you must upload them to this server.</p><?/*  You can also schedule your documents to print later.</p>*/?>
+<p>This tool helps you print documents to Athena cluster printers.  This is not an official MIT IS&T service; please do not contact them for support.</p>
 
 <p><h2>Print New Document</h2></p>
 <p>Upload a document to print from your hard disk, or install QuickPrint as a network printer:</p>
