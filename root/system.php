@@ -14,9 +14,10 @@ define('L_IMG', L_HTTP.'/img/');
 define('P_TOP', dirname(__FILE__));
 define('P_BASE', realpath(P_TOP.'/'));
 define('P_ROOT', realpath(P_TOP.'/../'));
-define('P_BIN', P_TOP.'/bin/');
 define('P_LIB', P_TOP.'/lib/');
 define('P_INC', P_TOP.'/inc/');
+define('P_BIN', '/mit/quickprint/bin/');
+define('P_FILTERS', '/mit/quickprint/libexec/filters/');
 
 set_include_path(get_include_path()
 				. PATH_SEPARATOR . P_LIB

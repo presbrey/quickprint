@@ -155,37 +155,34 @@ class Doc extends QPPage {
 	function queue($jid, $juser) {
 		$job = $this->get_job($jid, $juser);
 		if ($job) {
-			$jbanner = ($job['jbanner'] == 1);
-			$t_ban = ($jbanner ? $this->make_banner($job) : '');
+			$jbanner = ($job['jbanner'] == 1) ? '' : '-h';
+			//$t_ban = ($jbanner ? $this->make_banner($job) : '');
 			$t_doc = $this->make_printable($job);
 			clearstatcache();
-			if (file_exists($t_doc) && filesize($t_doc) &&
-				(!$jbanner || (file_exists($t_ban) && filesize($t_ban)>0))) {
+			//if (file_exists($t_doc) && filesize($t_doc) && (!$jbanner || (file_exists($t_ban) && filesize($t_ban)>0))) {
+			if (file_exists($t_doc) && filesize($t_doc)) {
 				$qdest = $job['jqueue'];
 				$qcopies = $job['jcopies'];
                 if (intval($qcopies) < 1)
                     $qcopies = 1;
-				//if ($job['jduplex']!=0) $qdest .= '2';
                 $jdup = $job['jduplex']!=0?'-Zduplex':'';
 				$qname = basename($job['jfile']);
 				`/mit/quickprint/ID/renew`;
 				putenv('KRB5CCNAME=/tmp/krb5cc_536886204');
 
+				$t_out = tempnam('/tmp', 'qpo_');
 				$t_err = tempnam('/tmp', 'qpe_');
-				//$t_out = tempnam('/tmp', 'qp_');
-				//`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
-				//if (strlen(trim(file_get_contents($t_err)))>0) {
-				//	`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pswrite -dDOINTERPOLATE -r300 -sOutputFile=$t_out $t_ban $t_doc 2> $t_err`;
-				//}
 				if (filesize($t_doc)>0) {
-					`lpr -V -P$qdest -J$qname -K$qcopies $jdup -h $t_ban $t_doc 2>$t_err`;
+					//echo "/mit/quickprint/bin/lpr -V -U$juser -P$qdest -J$qname -K$qcopies $jdup $jbanner $t_doc >$t_out 2>$t_err";
+                    //exit;
+					`/mit/quickprint/bin/lpr -V -U$juser -P$qdest -J$qname -K$qcopies $jdup $jbanner $t_doc >$t_out 2>$t_err`;
                     $lpr_err = trim(file_get_contents($t_err));
-					if (strlen($lpr_err)==0) {
+					if (strlen($lpr_err)<=71) {
 						$q = $this->DB->prepare(DB_J_STATUS);
 						$q->bind_param('sis', strval(sprintf("Error printing to %s (null), %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
 						$q->execute();
 					} else {
-                        $r = preg_match_all("/^done job 'quickprint@[^\+]+\+(\d+)' transfer/m", $lpr_err, $m);
+                        $r = preg_match_all("/^done job '$juser@[^\+]+\+(\d+)' transfer/m", $lpr_err, $m);
                         if ($r > 0 && count($m) > 1 && count($m[1]) > 0) {
                             $q = $this->DB->prepare(DB_S_ADD);
                             $q->bind_param('isi', $jid, $job['jqueue'], $m[1][0]);
@@ -211,8 +208,8 @@ class Doc extends QPPage {
                     $q->execute();
 				}
 
-				if (strlen($t_ban))
-					@unlink($t_ban);
+				//if (strlen($t_ban))
+				//	@unlink($t_ban);
                 if (substr($t_doc, 0, 4) == '/tmp')
                     @unlink($t_doc);
 				//@unlink($t_out);
@@ -342,7 +339,7 @@ class Doc extends QPPage {
 		$t_pre = "$t_pre.ps";
 
 		$x_ban = sprintf('(%sbanner -n %s -J %s -P %s %s) | psset -q -s - > %s',
-			P_BIN,
+			P_FILTERS,
 			escapeshellarg($res['juser']),
 			escapeshellarg($res['jname']),
 			escapeshellarg($res['jqueue']),

@@ -80,13 +80,14 @@ switch($entry) {
 ?>
 <h2>Known Issues</h2>
 <ul style="line-height: 2em">
-<li>User documents cannot be manipulated in Athena queues once "printed" from QuickPrint.</li>
+<li><s>User documents cannot be manipulated in Athena queues once "printed" from QuickPrint.</s><br />
+    <b>lpq</b> correctly reflects your username for all print jobs and <b>lprm</b> can be used for removal.</li>
 <li>Some malformed PostScript documents print only a banner page.</li>
 </ul>
-<p>We regret that no solutions are currently available for these issues.</p>
 
 <h2>Getting Support</h2>
 <p>Please email quickprint@mit.edu for all support issues.</p>
+<p><b>This is not an official MIT IS&T service; please do not contact them for support.</b></p>
 
 <?php
         break;
