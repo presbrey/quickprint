@@ -40,6 +40,21 @@ enter an unlisted queue name:
 </span>
 </td></tr>
 <tr><td colspan=2>
+<div id="queues_dorms">
+    <h3>Dorm Queues:</h3>
+    <?php
+    $i = 0;
+    echo '<table><tr>';
+    $queues_dorms = explode("\n",file_get_contents('printers-dorms.txt'));
+    foreach($queues_dorms as $queue) {
+        if ($i%3==0) echo '<tr>';
+        printf('<td><a href="%sdoc/?setup&jid=%d&queue=%s&save">%s</a></td>',
+            L_BASE, $jid, $queue, $queue);
+        if ($i++%3==2) echo '</tr>';
+    }
+    echo '</tr></table>';
+    echo '</div>';
+?>
 <?php
 $queues_recent = $this->queues_recent($this->s_uName);
 if (count($queues_recent))
@@ -81,7 +96,7 @@ foreach($map as $name=>$pos) {
 <?php
 printf('<span><img src="%s" /> %s</span>',
 	L_IMG.'lightbulb.gif',
-	'select a cluster on the map above denoted by its marker');
+	'select a cluster on the map, a dorm queue, or recent queue');
 ?></td></tr>
 </table>
 </div>

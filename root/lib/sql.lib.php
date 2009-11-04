@@ -20,4 +20,4 @@ define('DB_JT_SET', 'UPDATE jobopt SET textnup=?,textln=?,texthon=?,textbon=?,te
 
 define('DB_JQ_RECENT', "SELECT DISTINCT * FROM (SELECT jqueue FROM job j WHERE juser='%s' AND jqueue IS NOT NULL ORDER BY dupdated DESC) as t_jqueue LIMIT 10");
 
-define('DB_S_ADD', 'INSERT INTO spool (jid, jqueue, qid, inactive) VALUES (?, ?, ?, 0)');
+define('DB_S_ADD', 'INSERT INTO spool (jid, jqueue, qid, inactive, dadded) VALUES (?, ?, ?, 0, NOW())');

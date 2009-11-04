@@ -7,7 +7,11 @@ file_exists('config.php') && require('config.php');
 
 define('L_HOME', '/~quickprint');
 define('L_HTTP', 'http://quickprint.mit.edu');
-define('L_HTTPS', 'https://scripts.mit.edu' . L_HOME);
+if (strstr($_SERVER['HTTP_USER_AGENT'], 'Safari')) {
+    define('L_HTTPS', 'https://scripts.mit.edu:444' . L_HOME);
+} else {
+    define('L_HTTPS', 'https://scripts.mit.edu' . L_HOME);
+}
 define('L_BASE', L_HTTP.'/');
 define('L_IMG', L_HTTP.'/img/');
 

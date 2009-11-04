@@ -14,5 +14,10 @@ RewriteRule ^ http://quickprint.mit.edu [R]
 </Files>
 <Files "auth.php">
 	SSLVerifyDepth 2
-	SSLVerifyClient optional
+	SSLVerifyClient require
+</Files>
+
+<Files "cleanup">
+    Options +ExecCGI
+    SetHandler cgi-script
 </Files>

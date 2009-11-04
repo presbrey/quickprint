@@ -242,12 +242,25 @@ input.raw {
 fieldset {
 	margin: 0;
 }
+#queues_dorms {
+    border: 2px dashed silver;
+    position: absolute;
+    left: 520px;
+    top: 50px;
+    width: 250px;
+    height: 100px;
+    z-index: 1;
+    background-color: white;
+    overflow: scroll;
+}
 #queues_recent {
     border: 2px dashed silver;
     position: absolute;
-    left: 600px;
-    top: 325px;
-    width: 200px;
+    left: 520px;
+    top: 310px;
+    width: 250px;
     height: 100px;
     z-index: 1;
+    background-color: white;
+    overflow: scroll;
 }
