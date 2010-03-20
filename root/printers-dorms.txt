@@ -2,6 +2,7 @@ albany
 amittai
 ashdown
 barbar
+boomboom
 bricks
 clearcut
 e55prt
@@ -22,7 +23,6 @@ sidney
 simmons
 stumpgrinder
 tree-eater
-w5-002
 w61cluster
 waffle
 westgate

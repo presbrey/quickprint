@@ -18,6 +18,12 @@ switch($entry) {
 <p><img src="<?=L_IMG?>info.gif" /> Windows and Mac do not support using personal MIT certificates to authenticate to network printers.  Instead, use this password when installing the QuickPrint printer.  You may <a href="<?=L_BASE?>user/setup">change your printer password</a> if you prefer something else.</p>
 <?php } ?>
 
+<h2>Installing on Windows 7</h2>
+<p>Follow the Vista instructions.</p>
+<ul>
+<li>If you don't see <strong>HP Color LaserJet 9500 PS</strong>, make sure to click the "Windows Update" button during the <strong>Add a printer</strong> wizard and grab a coffee.</li>
+</ul>
+
 <h2>Installing on Windows Vista</h2>
 <ol style="line-height: 2em">
 <li>Go to <strong>Printers</strong> from <em>Hardware and Sound</em> in <em>Control Panel</em>, and click <strong>Add a printer</strong>.</li>
