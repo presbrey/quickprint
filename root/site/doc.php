@@ -155,7 +155,7 @@ class Doc extends QPPage {
 	function queue($jid, $juser) {
 		$job = $this->get_job($jid, $juser);
 		if ($job) {
-			$jbanner = ($job['jbanner'] == 1) ? '' : '-h';
+			$jbanner = ($job['jbanner'] == 1) ? '' : '-o job-sheets=none';
 			//$t_ban = ($jbanner ? $this->make_banner($job) : '');
 			$t_doc = $this->make_printable($job);
 			clearstatcache();
@@ -165,39 +165,29 @@ class Doc extends QPPage {
 				$qcopies = $job['jcopies'];
                 if (intval($qcopies) < 1)
                     $qcopies = 1;
-                $jdup = $job['jduplex']!=0?'-Zduplex':'';
+                $jdup = $job['jduplex']!=0?'-o sides=two-sided-long-edge':'-o sides=one-sided';
 				$qname = basename($job['jfile']);
 				`/mit/quickprint/ID/renew`;
 				putenv('KRB5CCNAME=/tmp/krb5cc_536886204');
 
-				$t_out = tempnam('/tmp', 'qpo_');
 				$t_err = tempnam('/tmp', 'qpe_');
 				if (filesize($t_doc)>0) {
-					//echo "/mit/quickprint/bin/lpr -V -U$juser -P$qdest -J$qname -K$qcopies $jdup $jbanner $t_doc >$t_out 2>$t_err";
-                    //exit;
-					`/mit/quickprint/bin/lpr -V -U$juser -P$qdest -J$qname -K$qcopies $jdup $jbanner $t_doc >$t_out 2>$t_err`;
+                    `/usr/bin/lpr.cups -H printers.mit.edu -U$juser -P$qdest -J$qname -#$qcopies $jdup $jbanner $t_doc >$t_err 2>&1`;
                     $lpr_err = trim(file_get_contents($t_err));
-					if (strlen($lpr_err)<=71) {
-						$q = $this->DB->prepare(DB_J_STATUS);
-						$q->bind_param('sis', strval(sprintf("Error printing to %s (null), %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
-						$q->execute();
+					if (strlen($lpr_err)==0) {
+                        $q = $this->DB->prepare(DB_S_ADD);
+                        $q->bind_param('isi', $jid, $job['jqueue'], $m[1][0]);
+                        $q->execute();
+                        $q = $this->DB->prepare(DB_J_STATUS);
+                        $q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
+                        $q->execute();
 					} else {
-                        $r = preg_match_all("/^done job '$juser@[^\+]+\+(\d+)' transfer/m", $lpr_err, $m);
-                        if ($r > 0 && count($m) > 1 && count($m[1]) > 0) {
-                            $q = $this->DB->prepare(DB_S_ADD);
-                            $q->bind_param('isi', $jid, $job['jqueue'], $m[1][0]);
-                            $q->execute();
-                            $q = $this->DB->prepare(DB_J_STATUS);
-                            $q->bind_param('sis', strval(sprintf("Printed to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
-                            $q->execute();
-                        } else {
-                            $q = $this->DB->prepare("INSERT INTO joberr (jid,jerr,derr) VALUES (?,?,NOW())");
-                            $q->bind_param('is', $jid, $lpr_err);
-                            $q->execute();
-                            $q = $this->DB->prepare(DB_J_STATUS);
-                            $q->bind_param('sis', strval(sprintf("Error printing to %s, %s", $job['jqueue'], date("M j G:i:s T Y"))), $jid, $this->s_uName);
-                            $q->execute();
-                        }
+                        $q = $this->DB->prepare("INSERT INTO joberr (jid,jerr,derr) VALUES (?,?,NOW())");
+                        $q->bind_param('is', $jid, $lpr_err);
+                        $q->execute();
+						$q = $this->DB->prepare(DB_J_STATUS);
+						$q->bind_param('sis', strval(sprintf("Error printing to %s at %s: %s", $job['jqueue'], date("M j G:i:s T Y"), $lpr_err)), $jid, $this->s_uName);
+						$q->execute();
 					}
 				} else {
 					$q = $this->DB->prepare(DB_J_STATUS);
@@ -212,7 +202,6 @@ class Doc extends QPPage {
 				//	@unlink($t_ban);
                 if (substr($t_doc, 0, 4) == '/tmp')
                     @unlink($t_doc);
-				//@unlink($t_out);
 				@unlink($t_err);
 			}
 		}
@@ -393,9 +382,7 @@ class Doc extends QPPage {
 
 			default:
 				//copy($jfile, $t_pre);
-                //`egrep -v '{.+setpagedevice.*}.*{.+setpagedevice.*}' $jfile > $t_pre`;
-                unlink($t_pre);
-                $t_pre = $jfile;
+                `sed -E 's:/(Duplex|Tumble) (false|true) *::g' $jfile > $t_pre`;
 				break;
 		}
 		return $t_pre;
