@@ -34,7 +34,7 @@ class cview {
 		} else {
 			@fwrite($this->socket, sprintf("%s\n", implode(' ', $cmds)));
 			$buf = '';
-			while(!feof($this->socket))
+			while($this->socket && !feof($this->socket))
 				$buf .= @fgets($this->socket);
 			@fclose($this->socket);
 			return $buf;
