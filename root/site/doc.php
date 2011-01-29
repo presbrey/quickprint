@@ -167,8 +167,8 @@ class Doc extends QPPage {
                     $qcopies = 1;
                 $jdup = $job['jduplex']!=0?'-o sides=two-sided-long-edge':'-o sides=one-sided';
 				$qname = basename($job['jfile']);
-				`/mit/quickprint/ID/renew`;
-				putenv('KRB5CCNAME=/tmp/krb5cc_536886204');
+				//`/mit/quickprint/ID/renew`;
+				//putenv('KRB5CCNAME=/tmp/krb5cc_536886204');
 
 				$t_err = tempnam('/tmp', 'qpe_');
 				if (filesize($t_doc)>0) {
