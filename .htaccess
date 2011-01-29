@@ -1,7 +1,5 @@
 RewriteEngine On
 
-RewriteBase /~quickprint
-
 RewriteRule ^(authpy.*)$ dev/main.py/$1 [L,QSA]
 RewriteRule ^auth.*$ root/auth.php [L,QSA]
 
