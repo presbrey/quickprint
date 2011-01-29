@@ -7,12 +7,16 @@ RewriteCond %{SERVER_NAME} scripts.mit.edu
 RewriteRule ^ http://quickprint.mit.edu [R]
 
 <Files "main.py">
-	SSLVerifyDepth 2
+<IfModule mod_ssl.c>
+	SSLVerifyDepth 1
 	SSLVerifyClient optional
+</IfModule>
 </Files>
 <Files "auth.php">
-	SSLVerifyDepth 2
+<IfModule mod_ssl.c>
+	SSLVerifyDepth 1
 	SSLVerifyClient require
+</IfModule>
 </Files>
 
 <Files "cleanup">
