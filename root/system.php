@@ -24,4 +24,3 @@ set_include_path(get_include_path()
 				. PATH_SEPARATOR . P_INC);
 
 session_name('qpID');
-session_save_path('/mit/quickprint/tmp');

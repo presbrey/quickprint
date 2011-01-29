@@ -1,3 +1,8 @@
+<Files *.py>
+    Options +ExecCGI
+    SetHandler cgi-script
+</Files>
+
 RewriteEngine On
 
 RewriteCond %{QUERY_STRING}		(.+)
@@ -26,5 +31,3 @@ RewriteRule .* %1 [L,QSA]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule .* index.php [L,QSA]
-
-RewriteRule ^$ index.php
