@@ -18,9 +18,9 @@ RewriteRule ^printer /ipp/printer.py?BASIC=%{HTTP:Authorization} [L]
 RewriteCond %{HTTP:Content-Type}    application/ipp
 RewriteRule ^$ /ipp/printer.py?BASIC=%{HTTP:Authorization} [L]
 
-RewriteCond %{HTTPS}			off
-RewriteCond %{SERVER_NAME}		!quickprint\.mit\.edu
-RewriteRule ^(.*)$				http://quickprint.mit.edu/$1 [R,L,NS,QSA]
+#RewriteCond %{HTTPS}			off
+#RewriteCond %{SERVER_NAME}		!quickprint\.mit\.edu
+#RewriteRule ^(.*)$				http://quickprint.mit.edu/$1 [R,L,NS,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
