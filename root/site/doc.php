@@ -237,17 +237,11 @@ class Doc extends QPPage {
 				header(sprintf('Content-Disposition: attachment; filename="%s-%d.pdf"', $this->s_uName, time()));
 				ob_end_flush();
 				$t_err = tempnam('/tmp', 'qpe_');
-				$t_out = tempnam('/tmp', 'qp_');
-				`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -sOutputFile=$t_out $t_doc 2> $t_err`;
+				`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=nullpage $t_doc > $t_err 2>&1`;
 				if (strlen(trim(file_get_contents($t_err)))>0) {
-					`gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -dDOINTERPOLATE -r300 -sOutputFile=$t_out $t_doc 2> $t_err`;
-					if (strlen(trim(file_get_contents($t_err)))==0) {
-						readfile($t_out);
-					} else {
-						readfile($t_err);
-					}
+				  passthru("gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -dDOINTERPOLATE -r300 -sOutputFile=- $t_doc");
 				} else {
-					readfile($t_out);
+				  passthru("gs -q -dBATCH -dSAFER -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -sOutputFile=- $t_doc");
 				}
 				@unlink($t_err);
                 if (substr($t_doc, 0, 4) == '/tmp')
