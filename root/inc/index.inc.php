@@ -1,4 +1,4 @@
-<p>This tool helps you print documents to Athena cluster printers.  This is not an official MIT IS&T service; please do not contact them for support.</p>
+<p>This tool helps you print documents to Athena cluster printers.  This is not an official MIT IS&T service; please do not contact them for support. IS&amp;T provides official instructions on <a href='http://kb.mit.edu/confluence/display/istcontrib/Pharos+Public+Student+Printing+at+MIT#PharosPublicStudentPrintingatMIT-Howtoprintfrom...'>setting up an Athena printer on your machine</a> which may also be useful.</p>
 
 <p><h2>Print New Document</h2></p>
 <p>Upload a document to print from your hard disk, or install QuickPrint as a network printer:</p>
