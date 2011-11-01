@@ -71,10 +71,13 @@ class cview {
 		$data = $this->_parse_config();
 		$clusters = array();
 		foreach($data as $d) {
+			# XXX: Hack to handle mitprint by pretending it's the
+			# only queue that exists in any cluster
 			if (isset($clusters[$d[0]])) {
-				$clusters[$d[0]] = array_merge($clusters[$d[0]], $d[1]);
+				#$clusters[$d[0]] = array_merge($clusters[$d[0]], $d[1]);
 			} else {
-				$clusters[$d[0]] = $d[1];
+				#$clusters[$d[0]] = $d[1];
+				$clusters[$d[0]] = Array('bw');
 			}
 		}
 		return $clusters;
